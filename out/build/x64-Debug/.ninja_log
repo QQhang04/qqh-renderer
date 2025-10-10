@@ -1,0 +1,5 @@
+# ninja log v6
+5	780	7817855525378270	CMakeFiles/softRenderer.dir/main.cpp.obj	23182d571c11eced
+680	891	7817859675762413	softRenderer.exe	bbb72af13cc35e3a
+5	525	7817859669023348	application/CMakeFiles/applicationLib.dir/application.cpp.obj	e48a4e1af8e18502
+525	680	7817859674223494	application/applicationLib.lib	616f0f0c5c63e041

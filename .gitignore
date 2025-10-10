@@ -1,0 +1,33 @@
+# ---- 通用 ----
+# IDE / 编辑器
+.vscode/
+.idea/
+.DS_Store
+
+# ---- 构建输出 ----
+/build/
+CMakeFiles/
+CMakeCache.txt
+cmake-build-*/
+Makefile
+compile_commands.json
+
+# ---- 可执行文件 & 目标文件 ----
+*.exe
+*.dll
+*.lib
+*.pdb
+*.ilk
+*.obj
+*.o
+*.a
+*.so
+*.dylib
+
+# ---- 临时文件 ----
+*.log
+*.tmp
+*~
+
+# Visual Studio 本地缓存
+.vs/
