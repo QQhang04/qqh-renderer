@@ -1,8 +1,27 @@
 #include <Windows.h>
 #include <iostream>
 #include "application/application.h"
+#include "gpu/gpu.h"
 
 #pragma comment(linker, "/subsystem:console /entry:wWinMainCRTStartup")
+
+void render() {
+    sgl->clear();
+
+    for (uint32_t i = 0; i < app->getWidth(); ++i) {
+        sgl->drawPoint(i, 100, RGBA(255, 255, 255));
+    }
+
+    /*
+    for (uint32_t i = 0; i < app->getWidth(); ++i) {
+        for (uint32_t j = 0; j < app->getHeight(); ++j) {
+            uint32_t v = std::rand() % 255;
+            RGBA color(v, v, v, v);
+            sgl->drawPoint(i, j, color);
+        }
+    }
+    */
+}
 
 int APIENTRY wWinMain(
     _In_        HINSTANCE hInstance,        // 本应用程序实例句柄，唯一指代当前程序
@@ -15,9 +34,13 @@ int APIENTRY wWinMain(
         return -1;
     }
 
+    sgl->initSurface(app->getWidth(), app->getHeight(), app->getCanvas());
+
     bool alive = true;
     while (alive) {
         alive = app->peekMessage();
+        render();
+        app->show();
     }
 
     return 0;

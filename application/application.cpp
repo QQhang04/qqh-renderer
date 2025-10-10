@@ -17,6 +17,11 @@ LRESULT CALLBACK Wndproc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
     return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
+void Application::show() {
+    BitBlt(mhDC, 0, 0, mWidth, mHeight, mCanvasDC, 0, 0, SRCCOPY);
+}
+
+
 bool Application::initApplication(HINSTANCE hInstance, const uint32_t& width, const uint32_t& height) {
     mWidth = width;
     mHeight = height;
@@ -28,6 +33,24 @@ bool Application::initApplication(HINSTANCE hInstance, const uint32_t& width, co
     if (!createWindow(hInstance)) {
         return false;
     }
+
+    // 绘图环境的构建
+    mhDC = GetDC(mHwnd);
+    mCanvasDC = CreateCompatibleDC(mhDC);
+
+    BITMAPINFO bmpInfo{};
+    bmpInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    bmpInfo.bmiHeader.biWidth = mWidth;
+    bmpInfo.bmiHeader.biHeight = mHeight;
+    bmpInfo.bmiHeader.biPlanes = 1;
+    bmpInfo.bmiHeader.biBitCount = 32;
+    bmpInfo.bmiHeader.biCompression = BI_RGB; // 实际上存储方式为bgra
+
+    mhBmp = CreateDIBSection(mCanvasDC, &bmpInfo, DIB_RGB_COLORS, (void**)&mCanvasBuffer, 0, 0);
+
+    SelectObject(mCanvasDC, mhBmp);
+
+    memset(mCanvasBuffer, 0, mWidth * mHeight * 4); // 清空buffer为0
 
     return true;
 }
@@ -69,7 +92,7 @@ ATOM Application::registerWindowClass(HINSTANCE hInstance)
     WNDCLASSEXW wndClass;
     wndClass.cbSize = sizeof(WNDCLASSEX);
     wndClass.style = CS_HREDRAW | CS_VREDRAW; // 水平/垂直大小发生变化重绘窗口
-    wndClass.lpfnWndProc = Wndproc;
+    wndClass.lpfnWndProc = Wndproc; // 设置回调函数
     wndClass.cbClsExtra = 0;
     wndClass.cbWndExtra = 0;
     wndClass.hInstance = hInstance;  // 应用程序句柄

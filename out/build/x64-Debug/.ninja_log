@@ -1,5 +1,14 @@
 # ninja log v6
 5	780	7817855525378270	CMakeFiles/softRenderer.dir/main.cpp.obj	23182d571c11eced
-680	891	7817859675762413	softRenderer.exe	bbb72af13cc35e3a
-5	525	7817859669023348	application/CMakeFiles/applicationLib.dir/application.cpp.obj	e48a4e1af8e18502
-525	680	7817859674223494	application/applicationLib.lib	616f0f0c5c63e041
+832	1036	7817881348103785	softRenderer.exe	bbb72af13cc35e3a
+5	766	7817881339836302	application/CMakeFiles/applicationLib.dir/application.cpp.obj	e48a4e1af8e18502
+767	832	7817881347459276	application/applicationLib.lib	616f0f0c5c63e041
+17	617	7817936007229282	gpu/CMakeFiles/gpuLib.dir/frameBuffer.cpp.obj	73cc159e0237b955
+58	628	7817936007646644	CMakeFiles/softRenderer.dir/gpu/frameBuffer.cpp.obj	3542bf5a82a0cc34
+28	860	7817936007343426	gpu/CMakeFiles/gpuLib.dir/gpu.cpp.obj	eea2cc047873223
+5	868	7817936007114250	application/CMakeFiles/applicationLib.dir/application.cpp.obj	e48a4e1af8e18502
+48	875	7817936007539093	CMakeFiles/softRenderer.dir/gpu/gpu.cpp.obj	c97467c29e114e0d
+17	89	7817936204709299	application/applicationLib.lib	616f0f0c5c63e041
+24	91	7817936204786568	gpu/gpuLib.lib	b0b5bb23f5ec4796
+6	507	7817936204601295	CMakeFiles/softRenderer.dir/main.cpp.obj	23182d571c11eced
+508	769	7817936209619396	softRenderer.exe	b2122c6c415a6ced

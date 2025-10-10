@@ -8,8 +8,10 @@ project(Graphic)
 set(CMAKE_CXX_STANDARD 17)
 
 add_subdirectory(application)
+add_subdirectory(gpu)
 
 # 本工程主程序文件及输出程序名称
-add_executable(softRenderer "main.cpp")
+add_executable(softRenderer "main.cpp" "gpu/gpu.cpp" "gpu/gpu.h" "gpu/frameBuffer.cpp" "gpu/frameBuffer.h")
 
 target_link_libraries(softRenderer applicationLib)
+target_link_libraries(softRenderer gpuLib)

@@ -31,3 +31,6 @@ compile_commands.json
 
 # Visual Studio 本地缓存
 .vs/
+
+# 自定义构建输出目录
+/out/
