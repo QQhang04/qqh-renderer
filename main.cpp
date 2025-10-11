@@ -12,9 +12,10 @@ void render() {
         sgl->drawPoint(i, 300, RGBA(255, 255, 255));
     }*/
     
-    Point a{ 100, 100, RGBA(255, 0, 0, 255) };
-    Point b{ 400, 300, RGBA(0, 255, 0, 255) };
-    sgl->drawLine(a, b);
+    Point a{ 0, 100, RGBA(255, 0, 0, 255) };
+    Point b{ 500, 100, RGBA(0, 255, 0, 255) };
+    Point c{ 250, 500, RGBA(0, 0, 255, 255) };
+    sgl->drawTriangle(a, b, c);
     /*Point c{ 400, 300, RGBA(255, 0, 0, 255) };
     int r = 100;
     for (float i = 0; i < 360; i += 10)

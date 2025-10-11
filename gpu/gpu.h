@@ -23,6 +23,7 @@ public:
     // 传入像素位置，绘制成某种颜色
     void drawPoint(const uint32_t& x, const uint32_t& y, const RGBA& color);
     void drawLine(const Point& p1, const Point& p2);
+    void drawTriangle(const Point& p1, const Point& p2, const Point& p3);
 
 private:
     static GPU* mInstance;
