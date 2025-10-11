@@ -64,6 +64,29 @@ void Raster::rasterizeLine(
 
         currentPoint.x = resX;
         currentPoint.y = resY;
+
+        interpolantLine(start, end, currentPoint);
+
         results.push_back(currentPoint);
     }
+}
+
+void Raster::interpolantLine(const Point& v0, const Point& v1, Point& target) {
+    float weight = 1.0f;
+    if (v1.x != v0.x) {
+        // 用x做比例
+        weight = (float)(target.x - v0.x) / (float)(v1.x - v0.x);
+    }
+    else if (v1.y != v0.y) {
+        // 用y做比例
+        weight = (float)(target.y - v0.y) / (float)(v1.y - v0.y);
+    }
+
+    RGBA result;
+    result.mR = static_cast<byte>(static_cast<float>(v1.color.mR) * weight + (1.0f - weight) * static_cast<float>(v0.color.mR));
+    result.mG = static_cast<byte>(static_cast<float>(v1.color.mG) * weight + (1.0f - weight) * static_cast<float>(v0.color.mG));
+    result.mB = static_cast<byte>(static_cast<float>(v1.color.mB) * weight + (1.0f - weight) * static_cast<float>(v0.color.mB));
+    result.mA = static_cast<byte>(static_cast<float>(v1.color.mA) * weight + (1.0f - weight) * static_cast<float>(v0.color.mA));
+
+    target.color = result;
 }

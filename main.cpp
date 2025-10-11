@@ -11,17 +11,20 @@ void render() {
     /*for (uint32_t i = 0; i < app->getWidth(); ++i) {
         sgl->drawPoint(i, 300, RGBA(255, 255, 255));
     }*/
+    
+    Point a{ 100, 100, RGBA(255, 0, 0, 255) };
+    Point b{ 400, 300, RGBA(0, 255, 0, 255) };
+    sgl->drawLine(a, b);
+    /*Point c{ 400, 300, RGBA(255, 0, 0, 255) };
     int r = 100;
-    Point c{ 400, 300 };
-
     for (float i = 0; i < 360; i += 10)
     {
         float radian = DEG2RAD(i);
         int x = r * sin(radian) + c.x;
         int y = r * cos(radian) + c.y;
-        Point pt{ x, y };
+        Point pt{ x, y, RGBA(rand() % 255, rand() % 255, rand() % 255, 255)};
         sgl->drawLine(c, pt);
-    }
+    }*/
 }
 
 int APIENTRY wWinMain(
