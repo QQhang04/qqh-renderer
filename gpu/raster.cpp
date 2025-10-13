@@ -144,15 +144,31 @@ void Raster::interpolantTriangle(const Point& v0, const Point& v1, const Point& 
     float weight1 = v1Area / sumArea;
     float weight2 = v2Area / sumArea;
 
+    // 颜色与 UV 插值
+    p.color = lerpRGBA(v0.color, v1.color, v2.color, weight0, weight1, weight2);
+    p.uv = lerpUV(v0.uv, v1.uv, v2.uv, weight0, weight1, weight2);
+}
+
+RGBA Raster::lerpRGBA(const RGBA& c0, const RGBA& c1, float weight) {
     RGBA result;
-    auto c0 = v0.color;
-    auto c1 = v1.color;
-    auto c2 = v2.color;
 
-    result.mR = static_cast<float>(c0.mR) * weight0 + static_cast<float>(c1.mR) * weight1 + static_cast<float>(c2.mR) * weight2;
-    result.mG = static_cast<float>(c0.mG) * weight0 + static_cast<float>(c1.mG) * weight1 + static_cast<float>(c2.mG) * weight2;
-    result.mB = static_cast<float>(c0.mB) * weight0 + static_cast<float>(c1.mB) * weight1 + static_cast<float>(c2.mB) * weight2;
-    result.mA = static_cast<float>(c0.mA) * weight0 + static_cast<float>(c1.mA) * weight1 + static_cast<float>(c2.mA) * weight2;
+    result.mR = static_cast<byte>(static_cast<float>(c1.mR) * weight + static_cast<float>(c0.mR) * (1.0f - weight));
+    result.mG = static_cast<byte>(static_cast<float>(c1.mG) * weight + static_cast<float>(c0.mG) * (1.0f - weight));
+    result.mB = static_cast<byte>(static_cast<float>(c1.mB) * weight + static_cast<float>(c0.mB) * (1.0f - weight));
+    result.mA = static_cast<byte>(static_cast<float>(c1.mA) * weight + static_cast<float>(c0.mA) * (1.0f - weight));
 
-    p.color = result;
+    return result;
+}
+
+RGBA Raster::lerpRGBA(const RGBA& c0, const RGBA& c1, const RGBA& c2, float w0, float w1, float w2) {
+    RGBA result;
+    result.mR = static_cast<byte>(static_cast<float>(c0.mR) * w0 + static_cast<float>(c1.mR) * w1 + static_cast<float>(c2.mR) * w2);
+    result.mG = static_cast<byte>(static_cast<float>(c0.mG) * w0 + static_cast<float>(c1.mG) * w1 + static_cast<float>(c2.mG) * w2);
+    result.mB = static_cast<byte>(static_cast<float>(c0.mB) * w0 + static_cast<float>(c1.mB) * w1 + static_cast<float>(c2.mB) * w2);
+    result.mA = static_cast<byte>(static_cast<float>(c0.mA) * w0 + static_cast<float>(c1.mA) * w1 + static_cast<float>(c2.mA) * w2);
+    return result;
+}
+
+math::vec2f Raster::lerpUV(const math::vec2f& uv1, const math::vec2f& uv2, const math::vec2f& uv3, float w0, float w1, float w2) {
+    return uv1 * w0 + uv2 * w1 + uv3 * w2;
 }

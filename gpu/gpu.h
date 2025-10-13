@@ -29,9 +29,20 @@ public:
     void drawImageWithAlpha(const Image* image, const uint32_t& alpha);
 
     void setBlending(bool isEnabled) { mEnableBlending = isEnabled; }
+    void setBilinear(bool isEnabled) { mEnableBilinear = isEnabled; }
+    void setTexture(Image* image) { mImage = image; }
+
+private:
+    RGBA sampleNearest(const math::vec2f& uv);
+    RGBA sampleBilinear(const math::vec2f& uv);
+
+    int getImagePosition(Image* image, int x, int y) {return y * image->mWidth + x;}
 
 private:
     static GPU* mInstance;
+
     bool mEnableBlending = false;
+    bool mEnableBilinear = false;
     FrameBuffer* mFrameBuffer{ nullptr };
+    Image* mImage{ nullptr }; // 纹理贴图
 };
