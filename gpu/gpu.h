@@ -1,6 +1,7 @@
 #pragma once
 #include "../application/application.h"
 #include "./frameBuffer.h"
+#include "../application/image.h"
 
 #define sgl GPU::getInstance()
 
@@ -20,12 +21,17 @@ public:
     // 清除画布内容
     void clear();
 
-    // 传入像素位置，绘制成某种颜色
+    // 绘制相关接口
     void drawPoint(const uint32_t& x, const uint32_t& y, const RGBA& color);
     void drawLine(const Point& p1, const Point& p2);
     void drawTriangle(const Point& p1, const Point& p2, const Point& p3);
+    void drawImage(const Image* image);
+    void drawImageWithAlpha(const Image* image, const uint32_t& alpha);
+
+    void setBlending(bool isEnabled) { mEnableBlending = isEnabled; }
 
 private:
     static GPU* mInstance;
+    bool mEnableBlending = false;
     FrameBuffer* mFrameBuffer{ nullptr };
 };

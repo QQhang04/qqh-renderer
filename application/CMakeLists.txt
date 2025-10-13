@@ -1,6 +1,8 @@
-# 设置当前目录下的源文件与头文件
-set(SOURCE_FILES application.cpp)
-set(HEADER_FILES application.h)
+# 收集 gpu 目录下全部源码
+file(GLOB_RECURSE APP_SRC
+    ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/*.h
+)
 
-# 生成静态库 applicationLib
-add_library(applicationLib STATIC ${SOURCE_FILES} ${HEADER_FILES})
+# 生成静态库 gpuLib
+add_library(applicationLib STATIC ${APP_SRC})
