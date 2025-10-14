@@ -31,6 +31,9 @@ public:
     void setBlending(bool isEnabled) { mEnableBlending = isEnabled; }
     void setBilinear(bool isEnabled) { mEnableBilinear = isEnabled; }
     void setTexture(Image* image) { mImage = image; }
+    void setTextureWrap(uint32_t wrap) { mWrap = wrap; }
+
+    void checkWrap(float& n);
 
 private:
     RGBA sampleNearest(const math::vec2f& uv);
@@ -43,6 +46,8 @@ private:
 
     bool mEnableBlending = false;
     bool mEnableBilinear = false;
+    uint32_t mWrap{ TEXTURE_WRAP_REPEAT };
+
     FrameBuffer* mFrameBuffer{ nullptr };
     Image* mImage{ nullptr }; // 纹理贴图
 };

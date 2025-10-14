@@ -90,7 +90,7 @@ void GPU::drawImageWithAlpha(const Image* image, const uint32_t& alpha) {
 
 RGBA GPU::sampleNearest(const math::vec2f& uv) {
     auto myUV = uv;
-
+    checkWrap(myUV.x); checkWrap(myUV.y);
     // 四舍五入到最近整数
     // u = 0 对应 x = 0，u = 1 对应 x = width - 1
     // v = 0 对应 y = 0，v = 1 对应 y = height - 1
@@ -103,6 +103,8 @@ RGBA GPU::sampleNearest(const math::vec2f& uv) {
 
 RGBA GPU::sampleBilinear(const math::vec2f& uv) {
     RGBA resColor;
+    auto myuv = uv; // 相当于拷贝了一份 
+    checkWrap(myuv.x); checkWrap(myuv.y);
 
     float x = uv.x * static_cast<float>(mImage->mWidth - 1);
     float y = uv.y * static_cast<float>(mImage->mHeight - 1);
@@ -124,6 +126,22 @@ RGBA GPU::sampleBilinear(const math::vec2f& uv) {
     RGBA r = Raster::lerpRGBA(mImage->mData[posRightTop], mImage->mData[posRightBottom], yScale);
     resColor = Raster::lerpRGBA(l, r, xScale);
     return resColor;
+}
+
+void GPU::checkWrap(float& n) {
+    if (n > 1.0f || n < 0.0f) {
+        n = FRACTION(n);
+        switch (mWrap) {
+        case TEXTURE_WRAP_REPEAT:
+            n = FRACTION(n + 1);
+            break;
+        case TEXTURE_WRAP_MIRROR:
+            n = 1.0f - FRACTION(n + 1);
+            break;
+        default:
+            break;
+        }
+    }
 }
 
 
