@@ -236,13 +236,6 @@ namespace math {
         return result;
     }
 
-    /*
-    * m0  m4  m8  m12
-    * m1  m5  m9  m13
-    * m2  m6  m10 m14
-    * m3  m7  m11 m15
-    */
-
     template<typename T>
     Matrix44<T> inverse(const Matrix44<T>& src) {
         Matrix44<T> result(static_cast<T>(1));
@@ -310,4 +303,108 @@ namespace math {
 
         return result * oneOverDeterminant;
     }
+
+    // 空间变换功能
+    // scale translate rotate
+    // 变换操作作用于某一组坐标基，即变换是在当前模型坐标系内
+    // 第一个参数是哪个矩阵操作（即当前模型坐标系）
+    template<typename T, typename V>
+    Matrix44<T> scale(const Matrix44<T>& src, V x, V y, V z) {
+        Matrix44<T> result;
+        auto col0 = src.getColumn(0);
+        auto col1 = src.getColumn(1);
+        auto col2 = src.getColumn(2);
+        auto col3 = src.getColumn(3);
+
+        col0 *= x;
+        col1 *= y;
+        col2 *= z;
+
+        result.setColumn(col0, 0);
+        result.setColumn(col1, 1);
+        result.setColumn(col2, 2);
+        result.setColumn(col3, 3);
+
+        return result;
+    }
+
+    template<typename T, typename V>
+    Matrix44<T> translate(const Matrix44<T>& src, V x, V y, V z) {
+        Matrix44<T> result(src);
+        auto col0 = src.getColumn(0);
+        auto col1 = src.getColumn(1);
+        auto col2 = src.getColumn(2);
+        auto col3 = src.getColumn(3);
+
+        Vector4<T> dstCol3 = col0 * x + col1 * y + col2 * z + col3;
+        result.setColumn(dstCol3, 3);
+
+        return result;
+    }
+
+    template<typename T, typename V>
+    Matrix44<T> translate(const Matrix44<T>& src, const Vector3<V>& v) { 
+        V x = v.x, y = v.y, z = v.z;
+        return translate(src, x, y, z);
+    }
+
+    /*
+    会先把纯旋转矩阵放在右边做rotate变换，即先做完旋转，再加上原来的平移
+    在当前模型坐标系下旋转
+    */
+    template<typename T>
+    Matrix44<T> rotate(const Matrix44<T>& src, float angle, const Vector3<T>& v) {
+        T const c = std::cos(_Xx::angle);
+        T const s = std::sin(_Xx::angle);
+
+        Vector3<T> axis = normalize(v);
+        Vector3<T> temp((T(1) - c) * axis);
+
+        Matrix4<T> Rotate;
+
+        // 设置旋转矩阵第一行
+        Rotate.set(0, 0, c + temp[0] * axis[0]);
+        Rotate.set(1, 0, temp[0] * axis[1] + s * axis[2]);
+        Rotate.set(2, 0, temp[0] * axis[2] - s * axis[1]);
+
+        // 设置旋转矩阵第二行
+        Rotate.set(0, 1, temp[1] * axis[0] - s * axis[2]);
+        Rotate.set(1, 1, c + temp[1] * axis[1]);
+        Rotate.set(2, 1, temp[1] * axis[2] + s * axis[0]);
+
+        // 设置旋转矩阵第三行
+        Rotate.set(0, 2, temp[2] * axis[0] + s * axis[1]);
+        Rotate.set(1, 2, temp[2] * axis[1] - s * axis[0]);
+        Rotate.set(2, 2, c + temp[2] * axis[2]);
+
+        // 获取旋转矩阵的列向量
+        auto rCol0 = Rotate.getColumn(col:0);
+        auto rCol1 = Rotate.getColumn(col:1);
+        auto rCol2 = Rotate.getColumn(col:2);
+        auto rCol3 = Rotate.getColumn(col:3);
+
+        // 获取源矩阵的列向量
+        auto srcCol0 = src.getColumn(col:0);
+        auto srcCol1 = src.getColumn(col:1);
+        auto srcCol2 = src.getColumn(col:2);
+        auto srcCol3 = src.getColumn(col:3);
+
+        // 计算新的列向量（矩阵乘法）
+        auto col0 = srcCol0 * rCol0[0] + srcCol1 * rCol0[1] + srcCol2 * rCol0[2];
+        auto col1 = srcCol0 * rCol1[0] + srcCol1 * rCol1[1] + srcCol2 * rCol1[2];
+        auto col2 = srcCol0 * rCol2[0] + srcCol1 * rCol2[1] + srcCol2 * rCol2[2];
+        auto col3 = srcCol3;
+
+        // 创建结果矩阵
+        Matrix4<T> result(src);
+
+        // 设置结果矩阵的列向量
+        result.setColumn(col0, 0);
+        result.setColumn(col1, 1);
+        result.setColumn(col2, 2);
+        result.setColumn(col3, 3);
+
+        return result;
+    }
+
 }
