@@ -45,3 +45,6 @@ struct Point {
 
 #define TEXTURE_WRAP_REPEAT 0
 #define TEXTURE_WRAP_MIRROR 1
+
+#define ARRAY_BUFFER 0
+#define ELEMENT_ARRAY_BUFFER 1

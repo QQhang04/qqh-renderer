@@ -8,19 +8,72 @@
 uint32_t WIDTH = 800;
 uint32_t HEIGHT = 600;
 
+//三个属性对应vbo
+uint32_t positionVbo = 0;
+uint32_t colorVbo = 0;
+uint32_t uvVbo = 0;
+
+//三角形的indices
+uint32_t ebo = 0;
+
+//本三角形专属vao
+uint32_t vao = 0;
+
 void transform() {
    
 }
 
-uint32_t vbo = 0;
-uint32_t vao = 0;
-
 void prepare() {
-    vbo = sgl->genBuffer();
-    sgl->deleteBuffer(vbo);
+    float positions[] = {
+        -0.5f, -0.5f, 0.0f,
+        -0.5f,  0.5f, 0.0f,
+         0.5f, -0.5f, 0.0f,
+    };
 
+    float colors[] = {
+        1.0f, 0.0f, 0.0f, 1.0f,
+        0.0f, 1.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f, 1.0f,
+    };
+
+    float uvs[] = {
+        0.0f, 0.0f,
+        0.0f, 1.0f,
+        1.0f, 0.0f,
+    };
+
+    uint32_t indices[] = { 0, 1, 2 };
+
+    //生成indices对应ebo
+    ebo = sgl->genBuffer();
+    sgl->bindBuffer(ELEMENT_ARRAY_BUFFER, ebo);
+    sgl->bufferData(ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * 3, indices);
+    sgl->bindBuffer(ELEMENT_ARRAY_BUFFER, 0);
+
+    //生成vao并且绑定
     vao = sgl->genVertexArray();
-    sgl->deleteVertexArray(vao);
+    sgl->bindVertexArray(vao);
+
+    //生成每个vbo，绑定后，设置属性ID及读取参数
+    auto positionVbo = sgl->genBuffer();
+    sgl->bindBuffer(ARRAY_BUFFER, positionVbo);
+    sgl->bufferData(ARRAY_BUFFER, sizeof(float) * 9, positions);
+    sgl->vertexAttributePointer(0, 3, 3 * sizeof(float), 0);
+
+    auto colorVbo = sgl->genBuffer();
+    sgl->bindBuffer(ARRAY_BUFFER, colorVbo);
+    sgl->bufferData(ARRAY_BUFFER, sizeof(float) * 12, colors);
+    sgl->vertexAttributePointer(1, 4, 4 * sizeof(float), 0);
+
+    auto uvVbo = sgl->genBuffer();
+    sgl->bindBuffer(ARRAY_BUFFER, uvVbo);
+    sgl->bufferData(ARRAY_BUFFER, sizeof(float) * 6, uvs);
+    sgl->vertexAttributePointer(2, 2, 2 * sizeof(float), 0);
+
+    sgl->bindBuffer(ARRAY_BUFFER, 0);
+    sgl->bindVertexArray(0);
+
+    sgl->printVAO(vao);
 }
 
 void render() {

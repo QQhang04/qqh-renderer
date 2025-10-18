@@ -23,11 +23,22 @@ public:
     // 清除画布内容
     void clear();
 
+    // 数据层相关接口
     uint32_t genBuffer();
     void deleteBuffer(const uint32_t& bufferID);
+    void bindBuffer(const uint32_t& bufferType, const uint32_t& bufferID);
+    void bufferData(const uint32_t& bufferType, size_t dataSize, void* data);
 
     uint32_t genVertexArray();
     void deleteVertexArray(const uint32_t& vaoID);
+    void bindVertexArray(const uint32_t& vaoID);
+    void vertexAttributePointer(
+        const uint32_t& binding,
+        const uint32_t& itemSize,
+        const uint32_t& stride,
+        const uint32_t& offset);
+
+    void printVAO(const uint32_t& vaoID);
 
     /* 绘制相关接口 deprecated
     void drawPoint(const uint32_t& x, const uint32_t& y, const RGBA& color);
@@ -41,10 +52,10 @@ public:
 
 private:
     // uv坐标采样
-    RGBA sampleNearest(const math::vec2f& uv);
+    /*RGBA sampleNearest(const math::vec2f& uv);
     RGBA sampleBilinear(const math::vec2f& uv);
 
-    int getImagePosition(Image* image, int x, int y) {return y * image->mWidth + x;}
+    int getImagePosition(Image* image, int x, int y) {return y * image->mWidth + x;}*/
 
 private:
     static GPU* mInstance;
@@ -52,9 +63,12 @@ private:
 
     //VBO相关
     uint32_t mBufferCounter{ 0 };
+    uint32_t mCurrentVBO{ 0 };
+    uint32_t mCurrentEBO{ 0 };
     std::map<uint32_t, BufferObject*> mBufferMap;
 
     //VAO相关
     uint32_t mVaoCounter{ 0 };
+    uint32_t mCurrentVAO{ 0 };
     std::map<uint32_t, VertexArrayObject*> mVaoMap;
 };
