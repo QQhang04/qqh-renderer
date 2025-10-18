@@ -10,7 +10,7 @@
 #define DEG2RAD(theta)   (0.01745329251994329 * (theta))
 #define FRACTION(v)      ((v) - (int)(v))
 
-#include "../math/math.h"
+// #include "../math/math.h"
 
 using byte = unsigned char;
 
@@ -33,6 +33,8 @@ struct RGBA {
         mA = a;
     }
 };
+
+#include "../math/math.h"
 
 struct Point {
     int32_t x;

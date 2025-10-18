@@ -26,6 +26,40 @@ void GPU::clear() {
     std::fill_n(mFrameBuffer->mColorBuffer, pixelSize, RGBA(0, 0, 0, 0));
 }
 
+uint32_t GPU::genBuffer() {
+    mBufferCounter++;
+    mBufferMap.insert(std::make_pair(mBufferCounter, new BufferObject()));
+
+    return mBufferCounter;
+}
+
+void GPU::deleteBuffer(const uint32_t& bufferID) {
+    auto iter = mBufferMap.find(bufferID);
+    if (iter != mBufferMap.end()) {
+        delete iter->second;
+    }
+
+    mBufferMap.erase(iter);
+}
+
+uint32_t GPU::genVertexArray() {
+    mVaoCounter++;
+    mVaoMap.insert(std::make_pair(mVaoCounter, new VertexArrayObject()));
+
+    return mVaoCounter;
+}
+
+void GPU::deleteVertexArray(const uint32_t& vaoID) {
+    auto iter = mVaoMap.find(vaoID);
+    if (iter != mVaoMap.end()) {
+        delete iter->second;
+    }
+    else {
+        return;
+    }
+}
+
+/* deprecated currently
 void GPU::drawPoint(const uint32_t& x, const uint32_t& y, const RGBA& color) {
     // 从窗口左下角开始
     if (x >= app->getWidth() || y >= app->getHeight()) {
@@ -130,6 +164,7 @@ RGBA GPU::sampleBilinear(const math::vec2f& uv) {
 
 void GPU::checkWrap(float& n) {
     if (n > 1.0f || n < 0.0f) {
+        bool mWrap = false; // TODO mock data
         n = FRACTION(n);
         switch (mWrap) {
         case TEXTURE_WRAP_REPEAT:
@@ -143,6 +178,7 @@ void GPU::checkWrap(float& n) {
         }
     }
 }
+*/
 
 
 

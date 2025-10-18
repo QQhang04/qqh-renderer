@@ -1,6 +1,7 @@
 #pragma once
 #include "../global/base.h"
 #include "../math/math.h"
+#include "./dataStructure.h"
 
 /*
  * class Raster
@@ -12,21 +13,21 @@ public:
     ~Raster() {};
 
     static void rasterizeLine(
-        std::vector<Point>& results,
-        const Point& v0,
-        const Point& v1
+        std::vector<VsOutput>& results,
+        const VsOutput& v0,
+        const VsOutput& v1
     );
 
-    static void interpolantLine(const Point& v0, const Point& v1, Point& target);
+    static void interpolantLine(const VsOutput& v0, const VsOutput& v1, VsOutput& target);
 
     static void rasterizeTriangle(
-        std::vector<Point>& results,
-        const Point& v0,
-        const Point& v1,
-        const Point& v2
+        std::vector<VsOutput>& results,
+        const VsOutput& v0,
+        const VsOutput& v1,
+        const VsOutput& v2
     );
 
-    static void interpolantTriangle(const Point& v0, const Point& v1, const Point& v2, Point& target);
+    static void interpolantTriangle(const VsOutput& v0, const VsOutput& v1, const VsOutput& v2, VsOutput& p);
 
     // Lerp接口
     static RGBA lerpRGBA(const RGBA& c0, const RGBA& c1, float weight); // 指定c1和weight正相关

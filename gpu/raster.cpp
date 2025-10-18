@@ -1,17 +1,17 @@
 #include "raster.h"
 
 void Raster::rasterizeLine(
-    std::vector<Point>& results,
-    const Point& v0,
-    const Point& v1
+    std::vector<VsOutput>& results,
+    const VsOutput& v0,
+    const VsOutput& v1
 ) {
     results.clear();
-    Point start = v0;
-    Point end = v1;
+    auto start = v0;
+    auto end = v1;
 
     // 验证x也是从小到大，需要交换x和y，并记录交换状态
-    if (start.x > end.x) {
-        Point tmp = start;
+    if (start.mPosition.x > end.mPosition.x) {
+        auto tmp = start;
         start = end;
         end = tmp;
     }
@@ -20,29 +20,29 @@ void Raster::rasterizeLine(
 
     //2 验证y也是从小到大，需要翻转y，并记录翻转状态
     bool flipY = false;
-    if (start.y > end.y) {
-        start.y *= -1.0f;
-        end.y *= -1.0f;
+    if (start.mPosition.y > end.mPosition.y) {
+        start.mPosition.y *= -1.0f;
+        end.mPosition.y *= -1.0f;
         flipY = true;
     }
 
     //3 验证斜率在0-1之间，需要交换x和y，并记录交换状态
-    int deltaX = static_cast<int>(end.x - start.x);
-    int deltaY = static_cast<int>(end.y - start.y);
+    int deltaX = static_cast<int>(end.mPosition.x - start.mPosition.x);
+    int deltaY = static_cast<int>(end.mPosition.y - start.mPosition.y);
 
     bool swapXY = false;
     if (deltaX < deltaY) {
-        std::swap(start.x, start.y);
-        std::swap(end.x, end.y);
+        std::swap(start.mPosition.x, start.mPosition.y);
+        std::swap(end.mPosition.x, end.mPosition.y);
         std::swap(deltaX, deltaY);
         swapXY = true;
     }
 
-    int curX = static_cast<int>(start.x);
-    int curY = static_cast<int>(start.y);
+    int curX = static_cast<int>(start.mPosition.x);
+    int curY = static_cast<int>(start.mPosition.y);
 
     int resX = 0, resY = 0;
-    Point currentPoint;
+    VsOutput currentPoint;
     int p = 2 * deltaY - deltaX;
 
     for (int i = 0; i < deltaX; i++) {
@@ -62,8 +62,8 @@ void Raster::rasterizeLine(
             resY *= -1;
         }
 
-        currentPoint.x = resX;
-        currentPoint.y = resY;
+        currentPoint.mPosition.x = resX;
+        currentPoint.mPosition.y = resY;
 
         interpolantLine(start, end, currentPoint);
 
@@ -71,43 +71,37 @@ void Raster::rasterizeLine(
     }
 }
 
-void Raster::interpolantLine(const Point& v0, const Point& v1, Point& target) {
+void Raster::interpolantLine(const VsOutput& v0, const VsOutput& v1, VsOutput& target) {
     float weight = 1.0f;
-    if (v1.x != v0.x) {
-        // 用x做比例
-        weight = (float)(target.x - v0.x) / (float)(v1.x - v0.x);
+    if (v1.mPosition.x != v0.mPosition.x) {
+        //用x做比例
+        weight = (float)(target.mPosition.x - v0.mPosition.x) / (float)(v1.mPosition.x - v0.mPosition.x);
     }
-    else if (v1.y != v0.y) {
-        // 用y做比例
-        weight = (float)(target.y - v0.y) / (float)(v1.y - v0.y);
+    else if (v1.mPosition.y != v0.mPosition.y) {
+        //用y做比例
+        weight = (float)(target.mPosition.y - v0.mPosition.y) / (float)(v1.mPosition.y - v0.mPosition.y);
     }
 
-    RGBA result;
-    result.mR = static_cast<byte>(static_cast<float>(v1.color.mR) * weight + (1.0f - weight) * static_cast<float>(v0.color.mR));
-    result.mG = static_cast<byte>(static_cast<float>(v1.color.mG) * weight + (1.0f - weight) * static_cast<float>(v0.color.mG));
-    result.mB = static_cast<byte>(static_cast<float>(v1.color.mB) * weight + (1.0f - weight) * static_cast<float>(v0.color.mB));
-    result.mA = static_cast<byte>(static_cast<float>(v1.color.mA) * weight + (1.0f - weight) * static_cast<float>(v0.color.mA));
-
-    target.color = result;
+    target.mColor = math::lerp(v0.mColor, v1.mColor, weight);
+    target.mUV = math::lerp(v0.mUV, v1.mUV, weight);
 }
-
 void Raster::rasterizeTriangle(
-    std::vector<Point>& results,
-    const Point& v0,
-    const Point& v1,
-    const Point& v2) {
-    int maxX = static_cast<int>(std::max(std::max(v0.x, v1.x), v2.x));
-    int minX = static_cast<int>(std::min(std::min(v0.x, v1.x), v2.x));
-    int maxY = static_cast<int>(std::max(std::max(v0.y, v1.y), v2.y));
-    int minY = static_cast<int>(std::min(std::min(v0.y, v1.y), v2.y));
+    std::vector<VsOutput>& results,
+    const VsOutput& v0,
+    const VsOutput& v1,
+    const VsOutput& v2) {
+    int maxX = static_cast<int>(std::max(std::max(v0.mPosition.x, v1.mPosition.x), v2.mPosition.x));
+    int minX = static_cast<int>(std::min(std::min(v0.mPosition.x, v1.mPosition.x), v2.mPosition.x));
+    int maxY = static_cast<int>(std::max(std::max(v0.mPosition.y, v1.mPosition.y), v2.mPosition.y));
+    int minY = static_cast<int>(std::min(std::min(v0.mPosition.y, v1.mPosition.y), v2.mPosition.y));
 
     math::vec2f pv0, pv1, pv2;
-    Point result;
+    VsOutput result;
     for (int i = minX; i <= maxX; ++i) {
         for (int j = minY; j <= maxY; ++j) {
-            pv0 = math::vec2f(v0.x - i, v0.y - j);
-            pv1 = math::vec2f(v1.x - i, v1.y - j);
-            pv2 = math::vec2f(v2.x - i, v2.y - j);
+            pv0 = math::vec2f(v0.mPosition.x - i, v0.mPosition.y - j);
+            pv1 = math::vec2f(v1.mPosition.x - i, v1.mPosition.y - j);
+            pv2 = math::vec2f(v2.mPosition.x - i, v2.mPosition.y - j);
 
             auto cross1 = math::cross(pv0, pv1);
             auto cross2 = math::cross(pv1, pv2);
@@ -117,8 +111,8 @@ void Raster::rasterizeTriangle(
             bool positiveAll = cross1 > 0 && cross2 > 0 && cross3 > 0;
 
             if (negativeAll || positiveAll) {
-                result.x = i;
-                result.y = j;
+                result.mPosition.x = i;
+                result.mPosition.y = j;
                 interpolantTriangle(v0, v1, v2, result);
                 results.push_back(result);
             }
@@ -126,14 +120,14 @@ void Raster::rasterizeTriangle(
     }
 }
 
-void Raster::interpolantTriangle(const Point& v0, const Point& v1, const Point& v2, Point& p) {
-    auto edge1 = math::vec2f(v1.x - v0.x, v1.y - v0.y);
-    auto edge2 = math::vec2f(v2.x - v0.x, v2.y - v0.y);
+void Raster::interpolantTriangle(const VsOutput& v0, const VsOutput& v1, const VsOutput& v2, VsOutput& p) {
+    auto edge1 = math::vec2f(v1.mPosition.x - v0.mPosition.x, v1.mPosition.y - v0.mPosition.y);
+    auto edge2 = math::vec2f(v2.mPosition.x - v0.mPosition.x, v2.mPosition.y - v0.mPosition.y);
     float sumArea = std::abs(math::cross(edge1, edge2));
 
-    auto pv0 = math::vec2f(v0.x - p.x, v0.y - p.y);
-    auto pv1 = math::vec2f(v1.x - p.x, v1.y - p.y);
-    auto pv2 = math::vec2f(v2.x - p.x, v2.y - p.y);
+    auto pv0 = math::vec2f(v0.mPosition.x - p.mPosition.x, v0.mPosition.y - p.mPosition.y);
+    auto pv1 = math::vec2f(v1.mPosition.x - p.mPosition.x, v1.mPosition.y - p.mPosition.y);
+    auto pv2 = math::vec2f(v2.mPosition.x - p.mPosition.x, v2.mPosition.y - p.mPosition.y);
 
     // 计算v0的权重
     float v0Area = std::abs(math::cross(pv1, pv2));
@@ -145,30 +139,6 @@ void Raster::interpolantTriangle(const Point& v0, const Point& v1, const Point& 
     float weight2 = v2Area / sumArea;
 
     // 颜色与 UV 插值
-    p.color = lerpRGBA(v0.color, v1.color, v2.color, weight0, weight1, weight2);
-    p.uv = lerpUV(v0.uv, v1.uv, v2.uv, weight0, weight1, weight2);
-}
-
-RGBA Raster::lerpRGBA(const RGBA& c0, const RGBA& c1, float weight) {
-    RGBA result;
-
-    result.mR = static_cast<byte>(static_cast<float>(c1.mR) * weight + static_cast<float>(c0.mR) * (1.0f - weight));
-    result.mG = static_cast<byte>(static_cast<float>(c1.mG) * weight + static_cast<float>(c0.mG) * (1.0f - weight));
-    result.mB = static_cast<byte>(static_cast<float>(c1.mB) * weight + static_cast<float>(c0.mB) * (1.0f - weight));
-    result.mA = static_cast<byte>(static_cast<float>(c1.mA) * weight + static_cast<float>(c0.mA) * (1.0f - weight));
-
-    return result;
-}
-
-RGBA Raster::lerpRGBA(const RGBA& c0, const RGBA& c1, const RGBA& c2, float w0, float w1, float w2) {
-    RGBA result;
-    result.mR = static_cast<byte>(static_cast<float>(c0.mR) * w0 + static_cast<float>(c1.mR) * w1 + static_cast<float>(c2.mR) * w2);
-    result.mG = static_cast<byte>(static_cast<float>(c0.mG) * w0 + static_cast<float>(c1.mG) * w1 + static_cast<float>(c2.mG) * w2);
-    result.mB = static_cast<byte>(static_cast<float>(c0.mB) * w0 + static_cast<float>(c1.mB) * w1 + static_cast<float>(c2.mB) * w2);
-    result.mA = static_cast<byte>(static_cast<float>(c0.mA) * w0 + static_cast<float>(c1.mA) * w1 + static_cast<float>(c2.mA) * w2);
-    return result;
-}
-
-math::vec2f Raster::lerpUV(const math::vec2f& uv1, const math::vec2f& uv2, const math::vec2f& uv3, float w0, float w1, float w2) {
-    return uv1 * w0 + uv2 * w1 + uv3 * w2;
+    p.mColor = math::lerp(v0.mColor, v1.mColor, v2.mColor, weight0, weight1, weight2);
+    p.mUV = math::lerp(v0.mUV, v1.mUV, v2.mUV, weight0, weight1, weight2);
 }

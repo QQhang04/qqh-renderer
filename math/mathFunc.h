@@ -6,6 +6,47 @@
 
 namespace math {
 
+    //各类lerp函数
+    static float lerp(const float& v1, const float& v2, const float& weight) {
+        return v2 * weight + (1.0f - weight) * v1;
+    }
+
+    static vec2f lerp(const vec2f& v1, const vec2f& v2, const float& weight) {
+        return v2 * weight + v1 * (1.0f - weight);
+    }
+
+    static vec3f lerp(const vec3f& v1, const vec3f& v2, const float& weight) {
+        return v2 * weight + v1 * (1.0f - weight);
+    }
+
+    static vec4f lerp(const vec4f& v1, const vec4f& v2, const float& weight) {
+        return v2 * weight + v1 * (1.0f - weight);
+    }
+
+    static RGBA lerp(const RGBA& v1, const RGBA& v2, const float& weight) {
+        RGBA result;
+        result.mR = static_cast<byte>(static_cast<float>(v2.mR) * weight + (1.0f - weight) * static_cast<float>(v1.mR));
+        result.mG = static_cast<byte>(static_cast<float>(v2.mG) * weight + (1.0f - weight) * static_cast<float>(v1.mG));
+        result.mB = static_cast<byte>(static_cast<float>(v2.mB) * weight + (1.0f - weight) * static_cast<float>(v1.mB));
+        result.mA = static_cast<byte>(static_cast<float>(v2.mA) * weight + (1.0f - weight) * static_cast<float>(v1.mA));
+    }
+
+    static float lerp(const float& v1, const float& v2, const float& v3, const float& weight1, const float& weight2, const float& weight3) {
+        return v1 * weight1 + v2 * weight2 + v3 * weight3;
+    }
+
+    static vec2f lerp(const vec2f& v1, const vec2f& v2, const vec2f& v3, const float& weight1, const float& weight2, const float& weight3) {
+        return v1 * weight1 + v2 * weight2 + v3 * weight3;
+    }
+
+    static vec3f lerp(const vec3f& v1, const vec3f& v2, const vec3f& v3, const float& weight1, const float& weight2, const float& weight3) {
+        return v1 * weight1 + v2 * weight2 + v3 * weight3;
+    }
+
+    static vec4f lerp(const vec4f& v1, const vec4f& v2, const vec4f& v3, const float& weight1, const float& weight2, const float& weight3) {
+        return v1 * weight1 + v2 * weight2 + v3 * weight3;
+    }
+
     /*
      * 标量与向量
      * s * v
