@@ -354,51 +354,44 @@ namespace math {
     */
     template<typename T>
     Matrix44<T> rotate(const Matrix44<T>& src, float angle, const Vector3<T>& v) {
-        T const c = std::cos(_Xx::angle);
-        T const s = std::sin(_Xx::angle);
+        T const c = std::cos(angle);
+        T const s = std::sin(angle);
 
         Vector3<T> axis = normalize(v);
         Vector3<T> temp((T(1) - c) * axis);
 
-        Matrix4<T> Rotate;
+        Matrix44<T> Rotate;
 
-        // 设置旋转矩阵第一行
+        // 设置旋转矩阵
         Rotate.set(0, 0, c + temp[0] * axis[0]);
         Rotate.set(1, 0, temp[0] * axis[1] + s * axis[2]);
         Rotate.set(2, 0, temp[0] * axis[2] - s * axis[1]);
 
-        // 设置旋转矩阵第二行
         Rotate.set(0, 1, temp[1] * axis[0] - s * axis[2]);
         Rotate.set(1, 1, c + temp[1] * axis[1]);
         Rotate.set(2, 1, temp[1] * axis[2] + s * axis[0]);
 
-        // 设置旋转矩阵第三行
         Rotate.set(0, 2, temp[2] * axis[0] + s * axis[1]);
         Rotate.set(1, 2, temp[2] * axis[1] - s * axis[0]);
         Rotate.set(2, 2, c + temp[2] * axis[2]);
 
-        // 获取旋转矩阵的列向量
-        auto rCol0 = Rotate.getColumn(col:0);
-        auto rCol1 = Rotate.getColumn(col:1);
-        auto rCol2 = Rotate.getColumn(col:2);
-        auto rCol3 = Rotate.getColumn(col:3);
+        auto rCol0 = Rotate.getColumn(0);
+        auto rCol1 = Rotate.getColumn(1);
+        auto rCol2 = Rotate.getColumn(2);
+        auto rCol3 = Rotate.getColumn(3);
 
-        // 获取源矩阵的列向量
-        auto srcCol0 = src.getColumn(col:0);
-        auto srcCol1 = src.getColumn(col:1);
-        auto srcCol2 = src.getColumn(col:2);
-        auto srcCol3 = src.getColumn(col:3);
+        auto srcCol0 = src.getColumn(0);
+        auto srcCol1 = src.getColumn(1);
+        auto srcCol2 = src.getColumn(2);
+        auto srcCol3 = src.getColumn(3);
 
-        // 计算新的列向量（矩阵乘法）
+        // 计算新的列向量
         auto col0 = srcCol0 * rCol0[0] + srcCol1 * rCol0[1] + srcCol2 * rCol0[2];
         auto col1 = srcCol0 * rCol1[0] + srcCol1 * rCol1[1] + srcCol2 * rCol1[2];
         auto col2 = srcCol0 * rCol2[0] + srcCol1 * rCol2[1] + srcCol2 * rCol2[2];
         auto col3 = srcCol3;
 
-        // 创建结果矩阵
-        Matrix4<T> result(src);
-
-        // 设置结果矩阵的列向量
+        Matrix44<T> result(src);
         result.setColumn(col0, 0);
         result.setColumn(col1, 1);
         result.setColumn(col2, 2);
@@ -407,4 +400,55 @@ namespace math {
         return result;
     }
 
+
+    //正交投影函数
+    template<typename T>
+    Matrix44<T> orthographic(T left, T right, T bottom, T top, T near, T far) {
+        Matrix44<T> result(static_cast<T>(1));
+
+        result.set(0, 0, static_cast<T>(2) / (right - left));
+        result.set(0, 3, -(right + left) / (right - left));
+        result.set(1, 1, static_cast<T>(2) / (top - bottom));
+        result.set(1, 3, -(top + bottom) / (top - bottom));
+        result.set(2, 2, -static_cast<T>(2) / (far - near));
+        result.set(1, 3, -(far + near) / (far - near));
+
+        return result;
+    }
+
+    //透视投影函数
+    //这里的fovy是y方向的fov
+    template<typename T>
+    Matrix44<T> perspective(T fovy, T aspect, T n, T f) {
+        T tanHalfFovy = static_cast<T>(std::tan(static_cast<double>(DEG2RAD(static_cast<double>(fovy) / 2.0))));
+
+        Matrix44<T> result(static_cast<T>(0));
+        result.set(0, 0, static_cast<T>(1) / (aspect * tanHalfFovy));
+        result.set(1, 1, static_cast<T>(1) / (tanHalfFovy));
+        result.set(2, 2, -(f + n) / (f - n));
+        result.set(2, 3, -static_cast<T>(2) * f * n / (f - n));
+        result.set(3, 2, -static_cast<T>(1));
+
+        return result;
+    }
+
+    //屏幕空间变换函数
+    template<typename T>
+    Matrix44<T> screenMatrix(const uint32_t& width, const uint32_t& height) {
+        Matrix44<T> result(static_cast<T>(1));
+
+        //x
+        result.set(0, 0, static_cast<T>(width) / static_cast<T>(2));
+        result.set(0, 3, static_cast<T>(width) / static_cast<T>(2));
+
+        //y
+        result.set(1, 1, static_cast<T>(height) / static_cast<T>(2));
+        result.set(1, 3, static_cast<T>(height) / static_cast<T>(2));
+
+        //z
+        result.set(2, 2, 0.5f);
+        result.set(2, 3, 0.5f);
+
+        return result;
+    }
 }
