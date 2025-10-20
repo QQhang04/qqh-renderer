@@ -12,6 +12,12 @@ public:
     Raster() {};
     ~Raster() {};
 
+    static void Raster::rasterize(
+        std::vector<VsOutput>& results,
+        const uint32_t& drawMode,
+        const std::vector<VsOutput>& inputs);
+
+private:
     static void rasterizeLine(
         std::vector<VsOutput>& results,
         const VsOutput& v0,
@@ -28,9 +34,4 @@ public:
     );
 
     static void interpolantTriangle(const VsOutput& v0, const VsOutput& v1, const VsOutput& v2, VsOutput& p);
-
-    // Lerp接口
-    static RGBA lerpRGBA(const RGBA& c0, const RGBA& c1, float weight); // 指定c1和weight正相关
-    static RGBA lerpRGBA(const RGBA& c0, const RGBA& c1, const RGBA& c2, float weight0, float weight1, float weight2);
-    static math::vec2f lerpUV(const math::vec2f& uv1, const math::vec2f& uv2, const math::vec2f& uv3, float weight0, float weight1, float weight2);
 };

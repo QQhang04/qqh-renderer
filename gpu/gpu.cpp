@@ -19,6 +19,7 @@ GPU::~GPU() {
 
 void GPU::initSurface(const uint32_t& width, const uint32_t& height, void* buffer) {
     mFrameBuffer = new FrameBuffer(width, height, buffer);
+    mScreenMatrix = math::screenMatrix<float>(width - 1, height - 1);
 }
 
 void GPU::clear() {
@@ -26,6 +27,7 @@ void GPU::clear() {
     std::fill_n(mFrameBuffer->mColorBuffer, pixelSize, RGBA(0, 0, 0, 0));
 }
 
+// 数据层接口
 uint32_t GPU::genBuffer() {
     mBufferCounter++;
     mBufferMap.insert(std::make_pair(mBufferCounter, new BufferObject()));
@@ -112,6 +114,108 @@ void GPU::printVAO(const uint32_t& vaoID) {
     if (iter != mVaoMap.end()) {
         iter->second->print();
     }
+}
+
+void GPU::printEBO(const uint32_t& eboID) {
+    auto iter = mBufferMap.find(eboID);
+    if (iter != mBufferMap.end()) {
+        byte* data = iter->second->getBuffer();
+        for (int i = 0; i < 3; i++) {
+            int tmp;
+            memcpy(&tmp, data + i * sizeof(uint32_t), sizeof(uint32_t));
+            std::cout << "EBO:" << tmp << " ";
+        }
+    }
+    std::cout << std::endl;
+}
+
+// 绘制接口
+void GPU::drawElement(const uint32_t& drawMode, const uint32_t& first, const uint32_t& count) {
+    if (mCurrentVAO == 0 || mShader == nullptr || count == 0) {
+        return;
+    }
+
+    // 1 get vao
+    auto vaoIter = mVaoMap.find(mCurrentVAO);
+    if (vaoIter == mVaoMap.end()) {
+        std::cerr << "Error: current vao is invalid!" << std::endl;
+        return;
+    }
+
+    const VertexArrayObject* vao = vaoIter->second;
+    auto bindingMap = vao->getBindingMap();
+
+    // 2 get ebo
+    auto eboIter = mBufferMap.find(mCurrentEBO);
+    if (eboIter == mBufferMap.end()) {
+        std::cerr << "Error: current ebo is invalid!" << std::endl;
+        return;
+    }
+    const BufferObject* ebo = eboIter->second;
+
+    // 3 vertex shader处理阶段
+    std::vector<VsOutput> vsOutputs;
+    vertexShaderStage(vsOutputs, vao, ebo, first, count);
+
+    if (vsOutputs.empty()) return;
+
+    // 4 NDC处理阶段
+    for (auto& output : vsOutputs) {
+        perspectiveDivision(output);
+    }
+
+    // 5 屏幕映射
+    for (auto& output : vsOutputs) {
+        screenMapping(output);
+    }
+
+    // 6 光栅化离散出需要的fragment
+    std::vector<VsOutput> rasterOutputs;
+    Raster::rasterize(rasterOutputs, drawMode, vsOutputs);
+
+    if (rasterOutputs.empty()) return;
+    
+    // 7 片元着色器 颜色输出
+    FsOutput fsOutput;
+    uint32_t pixelPos = 0;
+    for (uint32_t i = 0; i < rasterOutputs.size(); ++i) {
+        mShader->fragmentShader(rasterOutputs[i], fsOutput);
+        pixelPos = fsOutput.mPixelPos.y * mFrameBuffer->mWidth + fsOutput.mPixelPos.x;
+        mFrameBuffer->mColorBuffer[pixelPos] = fsOutput.mColor;
+    }
+
+}
+
+void GPU::vertexShaderStage(
+    std::vector<VsOutput>& vsOutputs,
+    const VertexArrayObject* vao,
+    const BufferObject* ebo,
+    const uint32_t first,
+    const uint32_t count) {
+
+    auto bindingMap = vao->getBindingMap();
+    byte* indicesData = ebo->getBuffer();
+
+    uint32_t index = 0;
+    for (uint32_t i = first; i < first + count; ++i) {
+        //获取Ebo中第i个index
+        size_t indicesOffset = i * sizeof(uint32_t);
+        memcpy(&index, indicesData + indicesOffset, sizeof(uint32_t));
+
+        VsOutput output = mShader->vertexShader(bindingMap, mBufferMap, index);
+        vsOutputs.push_back(output);
+    }
+}
+
+void GPU::perspectiveDivision(VsOutput& vsOutput) {
+    float oneOverW = 1.0f / vsOutput.mPosition.w;
+
+    vsOutput.mPosition *= oneOverW;
+    vsOutput.mPosition.w = 1.0f;
+}
+
+void GPU::screenMapping(VsOutput& vsOutput) {
+    vsOutput.mPosition = mScreenMatrix * vsOutput.mPosition;
 }
 
 /* deprecated currently

@@ -4,6 +4,7 @@
 #include "../application/image.h"
 #include "./vao.h"
 #include "./bufferObject.h"
+#include "./shader/defaultShader.h"
 
 #define sgl GPU::getInstance()
 
@@ -39,7 +40,21 @@ public:
         const uint32_t& offset);
 
     void printVAO(const uint32_t& vaoID);
+    void printEBO(const uint32_t& eboID);
 
+    // shader绘制相关接口
+    void useProgram(Shader* shader) {
+        mShader = shader;
+    }
+
+    void drawElement(const uint32_t& drawMode, const uint32_t& first, const uint32_t& count);
+    void vertexShaderStage(std::vector<VsOutput>& vsOutputs,
+        const VertexArrayObject* vao,
+        const BufferObject* ebo,
+        const uint32_t first,
+        const uint32_t count);
+    void perspectiveDivision(VsOutput& vsOutput);
+    void screenMapping(VsOutput& vsOutput);
     /* 绘制相关接口 deprecated
     void drawPoint(const uint32_t& x, const uint32_t& y, const RGBA& color);
     void drawLine(const Point& p1, const Point& p2);
@@ -71,4 +86,8 @@ private:
     uint32_t mVaoCounter{ 0 };
     uint32_t mCurrentVAO{ 0 };
     std::map<uint32_t, VertexArrayObject*> mVaoMap;
+
+    // Shader和绘制相关
+    Shader* mShader { nullptr };
+    math::Mat4f mScreenMatrix;
 };

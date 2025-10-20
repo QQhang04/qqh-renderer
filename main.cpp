@@ -19,8 +19,19 @@ uint32_t ebo = 0;
 //本三角形专属vao
 uint32_t vao = 0;
 
+// 使用的Shader
+DefaultShader* shader = nullptr;
+
+//mvp变换矩阵
+math::Mat4f modelMatrix;
+math::Mat4f viewMatrix;
+math::Mat4f perspectiveMatrix;
+
+float angle = 0.0f;
 void transform() {
-   
+    angle += 0.01f;
+    //模型变换
+    modelMatrix = math::rotate(math::Mat4f(1.0f), angle, math::vec3f(0.0f, 1.0f, 0.0f));
 }
 
 void prepare() {
@@ -74,14 +85,25 @@ void prepare() {
     sgl->bindVertexArray(0);
 
     sgl->printVAO(vao);
+    sgl->printEBO(ebo);
+
+    shader = new DefaultShader();
+    perspectiveMatrix = math::perspective(60.0f, (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
+    auto cameraModelMatrix = math::translate(math::Mat4f(1.0f), math::vec3f(0.0f, 0.0f, 3.0f));
+    viewMatrix = math::inverse(cameraModelMatrix);
 }
 
 void render() {
     transform();
+    shader->mModelMatrix = modelMatrix;
+    shader->mViewMatrix = viewMatrix;
+    shader->mProjectionMatrix = perspectiveMatrix;
+
     sgl->clear();
-    // sgl->setBilinear(false);
-    // sgl->setTexture(texture);
-    //sgl->drawTriangle(p1, p2, p3);
+    sgl->useProgram(shader);
+    sgl->bindVertexArray(vao);
+    sgl->bindBuffer(ELEMENT_ARRAY_BUFFER, ebo);
+    sgl->drawElement(DRAW_TRIANGLES, 0, 3);
 }
 
 int APIENTRY wWinMain(
