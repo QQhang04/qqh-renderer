@@ -5,6 +5,7 @@
 #include "./vao.h"
 #include "./bufferObject.h"
 #include "./shader/defaultShader.h"
+#include "./clipper.h"
 
 #define sgl GPU::getInstance()
 

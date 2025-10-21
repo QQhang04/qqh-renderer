@@ -159,19 +159,23 @@ void GPU::drawElement(const uint32_t& drawMode, const uint32_t& first, const uin
 
     if (vsOutputs.empty()) return;
 
+    // 4 Clip裁剪
+    std::vector<VsOutput> clipOutputs;
+    Clipper::doClipSpace(DRAW_TRIANGLES, vsOutputs, clipOutputs);
+
     // 4 NDC处理阶段
-    for (auto& output : vsOutputs) {
+    for (auto& output : clipOutputs) {
         perspectiveDivision(output);
     }
 
     // 5 屏幕映射
-    for (auto& output : vsOutputs) {
+    for (auto& output : clipOutputs) {
         screenMapping(output);
     }
 
     // 6 光栅化离散出需要的fragment
     std::vector<VsOutput> rasterOutputs;
-    Raster::rasterize(rasterOutputs, drawMode, vsOutputs);
+    Raster::rasterize(rasterOutputs, drawMode, clipOutputs);
 
     if (rasterOutputs.empty()) return;
     

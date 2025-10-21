@@ -28,10 +28,15 @@ math::Mat4f viewMatrix;
 math::Mat4f perspectiveMatrix;
 
 float angle = 0.0f;
+float camZ = 3;
 void transform() {
-    angle += 0.01f;
+    //angle += 0.01f;
+    camZ -= 0.01f;
     //模型变换
     modelMatrix = math::rotate(math::Mat4f(1.0f), angle, math::vec3f(0.0f, 1.0f, 0.0f));
+    // 摄像机移动
+    auto cameraModelMatrix = math::translate(math::Mat4f(1.0f), math::vec3f(0.0f, 0.0f, camZ));
+    viewMatrix = math::inverse(cameraModelMatrix);
 }
 
 void prepare() {
