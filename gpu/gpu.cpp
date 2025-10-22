@@ -178,6 +178,11 @@ void GPU::drawElement(const uint32_t& drawMode, const uint32_t& first, const uin
     Raster::rasterize(rasterOutputs, drawMode, clipOutputs);
 
     if (rasterOutputs.empty()) return;
+
+    // 6.5 透视恢复阶段
+    for (auto& out : rasterOutputs) {
+        perspectiveRecover(out);
+    }
     
     // 7 片元着色器 颜色输出
     FsOutput fsOutput;
@@ -212,10 +217,46 @@ void GPU::vertexShaderStage(
 }
 
 void GPU::perspectiveDivision(VsOutput& vsOutput) {
-    float oneOverW = 1.0f / vsOutput.mPosition.w;
+    vsOutput.mOneOverW = 1.0f / vsOutput.mPosition.w;
 
-    vsOutput.mPosition *= oneOverW;
+    vsOutput.mPosition *= vsOutput.mOneOverW;
+    vsOutput.mColor *= vsOutput.mOneOverW;
+    vsOutput.mUV *= vsOutput.mOneOverW;
     vsOutput.mPosition.w = 1.0f;
+
+    trim(vsOutput);
+}
+
+void GPU::perspectiveRecover(VsOutput& vsOutput) {
+    vsOutput.mColor /= vsOutput.mOneOverW;
+    vsOutput.mUV /= vsOutput.mOneOverW;
+}
+
+void GPU::trim(VsOutput& vsOutput) {
+    // 修剪毛刺，边界求交点的时候，可能会产生超过-1~1现象
+    if (vsOutput.mPosition.x < -1.0f) {
+        vsOutput.mPosition.x = -1.0f;
+    }
+
+    if (vsOutput.mPosition.x > 1.0f) {
+        vsOutput.mPosition.x = 1.0f;
+    }
+
+    if (vsOutput.mPosition.y < -1.0f) {
+        vsOutput.mPosition.y = -1.0f;
+    }
+
+    if (vsOutput.mPosition.y > 1.0f) {
+        vsOutput.mPosition.y = 1.0f;
+    }
+
+    if (vsOutput.mPosition.z < -1.0f) {
+        vsOutput.mPosition.z = -1.0f;
+    }
+
+    if (vsOutput.mPosition.z > 1.0f) {
+        vsOutput.mPosition.z = 1.0f;
+    }
 }
 
 void GPU::screenMapping(VsOutput& vsOutput) {

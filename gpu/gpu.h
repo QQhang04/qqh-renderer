@@ -55,7 +55,9 @@ public:
         const uint32_t first,
         const uint32_t count);
     void perspectiveDivision(VsOutput& vsOutput);
+    void trim(VsOutput& vsOutput);
     void screenMapping(VsOutput& vsOutput);
+    void perspectiveRecover(VsOutput& vsOutput);
     /* 绘制相关接口 deprecated
     void drawPoint(const uint32_t& x, const uint32_t& y, const RGBA& color);
     void drawLine(const Point& p1, const Point& p2);

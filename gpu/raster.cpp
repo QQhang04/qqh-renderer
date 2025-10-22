@@ -156,7 +156,11 @@ void Raster::interpolantTriangle(const VsOutput& v0, const VsOutput& v1, const V
     float weight1 = v1Area / sumArea;
     float weight2 = v2Area / sumArea;
 
+    // 进行透视修正准备w0
+    p.mOneOverW = math::lerp(v0.mOneOverW, v1.mOneOverW, v2.mOneOverW, weight0, weight1, weight2);
     // 颜色与 UV 插值
     p.mColor = math::lerp(v0.mColor, v1.mColor, v2.mColor, weight0, weight1, weight2);
     p.mUV = math::lerp(v0.mUV, v1.mUV, v2.mUV, weight0, weight1, weight2);
+    // 深度值插值
+    p.mPosition.z = math::lerp(v0.mPosition.z, v1.mPosition.z, v2.mPosition.z, weight0, weight1, weight2);
 }
