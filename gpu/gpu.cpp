@@ -209,8 +209,14 @@ void GPU::drawElement(const uint32_t& drawMode, const uint32_t& first, const uin
             continue;
         }
 
+        // 进行颜色混合
+        RGBA color = fsOutput.mColor;
+        if (mEnableBlending) {
+            color = blend(fsOutput);
+        }
+
         pixelPos = fsOutput.mPixelPos.y * mFrameBuffer->mWidth + fsOutput.mPixelPos.x;
-        mFrameBuffer->mColorBuffer[pixelPos] = fsOutput.mColor;
+        mFrameBuffer->mColorBuffer[pixelPos] = color;
     }
 }
 
@@ -312,6 +318,22 @@ bool GPU::depthTest(const FsOutput& output) {
     }
 }
 
+RGBA GPU::blend(const FsOutput& output) {
+    RGBA result;
+
+    uint32_t pixelPos = output.mPixelPos.y * mFrameBuffer->mWidth + output.mPixelPos.x;
+    RGBA dst = mFrameBuffer->mColorBuffer[pixelPos];
+    RGBA src = output.mColor;
+
+    float weight = static_cast<float>(src.mA) / 255.0f;
+
+    result.mR = static_cast<float>(src.mR) * weight + static_cast<float>(dst.mR) * (1.0f - weight);
+    result.mG = static_cast<float>(src.mG) * weight + static_cast<float>(dst.mG) * (1.0f - weight);
+    result.mB = static_cast<float>(src.mB) * weight + static_cast<float>(dst.mB) * (1.0f - weight);
+    result.mA = static_cast<float>(src.mA) * weight + static_cast<float>(dst.mA) * (1.0f - weight);
+
+    return result;
+}
 /* deprecated currently
 void GPU::drawPoint(const uint32_t& x, const uint32_t& y, const RGBA& color) {
     // 从窗口左下角开始

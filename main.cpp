@@ -50,9 +50,9 @@ void prepare() {
     };
 
     float colors[] = {
-        1.0f, 0.0f, 0.0f, 1.0f,
-        0.0f, 1.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f, 1.0f,
+        1.0f, 0.0f, 0.0f, 0.5f,
+        0.0f, 1.0f, 0.0f, 0.5f,
+        0.0f, 0.0f, 1.0f, 0.5f,
     };
 
     //第二个三角形
@@ -140,13 +140,14 @@ void render() {
 
     sgl->clear();
     sgl->useProgram(shader);
-    sgl->bindVertexArray(vao);
-    sgl->bindBuffer(ELEMENT_ARRAY_BUFFER, ebo);
-    sgl->drawElement(DRAW_TRIANGLES, 0, 3);
 
     sgl->bindVertexArray(vao1);
     sgl->bindBuffer(ELEMENT_ARRAY_BUFFER, ebo);
     sgl->drawElement(DRAW_TRIANGLES, 0, 3);
+
+    sgl->bindVertexArray(vao);
+    sgl->bindBuffer(ELEMENT_ARRAY_BUFFER, ebo);
+    sgl->drawElement(DRAW_TRIANGLES, 0, 3); 
 }
 
 int APIENTRY wWinMain(

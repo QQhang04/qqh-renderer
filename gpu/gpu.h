@@ -59,6 +59,7 @@ public:
     bool depthTest(const FsOutput& output);
     void screenMapping(VsOutput& vsOutput);
     void perspectiveRecover(VsOutput& vsOutput);
+    RGBA blend(const FsOutput& output);
 
     // 设置参数相关接口
     void setEnable(const uint32_t& value, bool val) {
@@ -128,5 +129,8 @@ private:
 
     // 深度测试相关
     bool mEnableDepthTest{ true };
-    uint32_t mDepthFunc{ DEPTH_LESS };
+    uint32_t mDepthFunc{ DEPTH_LESS }; 
+
+    // 颜色混合相关
+    bool mEnableBlending{ true };
 };
