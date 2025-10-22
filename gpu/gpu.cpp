@@ -25,6 +25,7 @@ void GPU::initSurface(const uint32_t& width, const uint32_t& height, void* buffe
 void GPU::clear() {
     size_t pixelSize = mFrameBuffer->mWidth * mFrameBuffer->mHeight;
     std::fill_n(mFrameBuffer->mColorBuffer, pixelSize, RGBA(0, 0, 0, 0));
+    std::fill_n(mFrameBuffer->mDepthBuffer, pixelSize, 1.0f);
 }
 
 // 数据层接口
@@ -168,14 +169,27 @@ void GPU::drawElement(const uint32_t& drawMode, const uint32_t& first, const uin
         perspectiveDivision(output);
     }
 
+    // 背面剔除阶段
+    std::vector<VsOutput> cullOutputs = clipOutputs;
+    if (drawMode == DRAW_TRIANGLES && mEnableCullFace) {
+        cullOutputs.clear();
+        for (uint32_t i = 0; i < clipOutputs.size() - 2; i += 3) {
+            if (Clipper::cullFace(mFrontFace, mCullFace, clipOutputs[i], clipOutputs[i + 1], clipOutputs[i + 2])) {
+                auto start = clipOutputs.begin() + i;
+                auto end = clipOutputs.begin() + i + 3;
+                cullOutputs.insert(cullOutputs.end(), start, end);
+            }
+        }
+    }
+
     // 5 屏幕映射
-    for (auto& output : clipOutputs) {
+    for (auto& output : cullOutputs) {
         screenMapping(output);
     }
 
     // 6 光栅化离散出需要的fragment
     std::vector<VsOutput> rasterOutputs;
-    Raster::rasterize(rasterOutputs, drawMode, clipOutputs);
+    Raster::rasterize(rasterOutputs, drawMode, cullOutputs);
 
     if (rasterOutputs.empty()) return;
 
@@ -189,10 +203,15 @@ void GPU::drawElement(const uint32_t& drawMode, const uint32_t& first, const uin
     uint32_t pixelPos = 0;
     for (uint32_t i = 0; i < rasterOutputs.size(); ++i) {
         mShader->fragmentShader(rasterOutputs[i], fsOutput);
+
+        // 进行深度测试
+        if (mEnableDepthTest && !depthTest(fsOutput)) {
+            continue;
+        }
+
         pixelPos = fsOutput.mPixelPos.y * mFrameBuffer->mWidth + fsOutput.mPixelPos.x;
         mFrameBuffer->mColorBuffer[pixelPos] = fsOutput.mColor;
     }
-
 }
 
 void GPU::vertexShaderStage(
@@ -261,6 +280,36 @@ void GPU::trim(VsOutput& vsOutput) {
 
 void GPU::screenMapping(VsOutput& vsOutput) {
     vsOutput.mPosition = mScreenMatrix * vsOutput.mPosition;
+}
+
+bool GPU::depthTest(const FsOutput& output) {
+    uint32_t pixelPos = output.mPixelPos.y * mFrameBuffer->mWidth + output.mPixelPos.x;
+    float oldDepth = mFrameBuffer->mDepthBuffer[pixelPos];
+    switch (mDepthFunc)
+    {
+    case DEPTH_LESS:
+        if (output.mDepth < oldDepth) {
+            mFrameBuffer->mDepthBuffer[pixelPos] = output.mDepth;
+            return true;
+        }
+        else {
+            return false;
+        }
+        break;
+    case DEPTH_GREATER:
+        if (output.mDepth > oldDepth) {
+            mFrameBuffer->mDepthBuffer[pixelPos] = output.mDepth;
+            return true;
+        }
+        else {
+            return false;
+        }
+        break;
+    
+    default:
+        return false;
+        break;
+    }
 }
 
 /* deprecated currently

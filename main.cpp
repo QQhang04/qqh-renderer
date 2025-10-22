@@ -10,14 +10,17 @@ uint32_t HEIGHT = 600;
 
 //三个属性对应vbo
 uint32_t positionVbo = 0;
+uint32_t positionVbo1 = 0;
 uint32_t colorVbo = 0;
+uint32_t colorVbo1 = 0;
 uint32_t uvVbo = 0;
 
 //三角形的indices
 uint32_t ebo = 0;
 
-//本三角形专属vao
+//三角形专属vao
 uint32_t vao = 0;
+uint32_t vao1 = 0;
 
 // 使用的Shader
 DefaultShader* shader = nullptr;
@@ -28,9 +31,9 @@ math::Mat4f viewMatrix;
 math::Mat4f perspectiveMatrix;
 
 float angle = 0.0f;
-float camZ = 3;
+float camZ = 3.0f;
 void transform() {
-    angle += 0.01f;
+    //angle += 0.01f;
     //camZ -= 0.01f;
     //模型变换
     modelMatrix = math::rotate(math::Mat4f(1.0f), angle, math::vec3f(0.0f, 1.0f, 0.0f));
@@ -41,15 +44,28 @@ void transform() {
 
 void prepare() {
     float positions[] = {
-        -0.5f, -0.5f, 0.0f,
-        -0.5f,  0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
+        -0.5f, 0.0f, 0.0f,
+        0.5f,  0.0f, 0.0f,
+         0.25f, 0.5f, 0.0f,
     };
 
     float colors[] = {
         1.0f, 0.0f, 0.0f, 1.0f,
         0.0f, 1.0f, 0.0f, 1.0f,
         0.0f, 0.0f, 1.0f, 1.0f,
+    };
+
+    //第二个三角形
+    float positions1[] = {
+        0.3f, 0.0f, -0.3f,
+        0.8f, 0.0f, -0.3f,
+        0.45f, 0.5f, -0.3f,
+    };
+
+    float colors1[] = {
+        1.0f, 1.0f, 0.0f, 1.0f,
+        1.0f, 1.0f, 0.0f, 1.0f,
+        1.0f, 1.0f, 0.0f, 1.0f,
     };
 
     float uvs[] = {
@@ -89,8 +105,26 @@ void prepare() {
     sgl->bindBuffer(ARRAY_BUFFER, 0);
     sgl->bindVertexArray(0);
 
-    sgl->printVAO(vao);
-    sgl->printEBO(ebo);
+    /*sgl->printVAO(vao);
+    sgl->printEBO(ebo);*/
+
+    //生成vao1并且绑定
+    vao1 = sgl->genVertexArray();
+    sgl->bindVertexArray(vao1);
+
+    //生成每个vbo1，绑定后，设置属性ID及读取参数
+    auto positionVbo1 = sgl->genBuffer();
+    sgl->bindBuffer(ARRAY_BUFFER, positionVbo1);
+    sgl->bufferData(ARRAY_BUFFER, sizeof(float) * 9, positions1);
+    sgl->vertexAttributePointer(0, 3, 3 * sizeof(float), 0);
+
+    auto colorVbo1 = sgl->genBuffer();
+    sgl->bindBuffer(ARRAY_BUFFER, colorVbo1);
+    sgl->bufferData(ARRAY_BUFFER, sizeof(float) * 12, colors1);
+    sgl->vertexAttributePointer(1, 4, 4 * sizeof(float), 0);
+
+    sgl->bindBuffer(ARRAY_BUFFER, uvVbo);
+    sgl->vertexAttributePointer(2, 2, 2 * sizeof(float), 0);
 
     shader = new DefaultShader();
     perspectiveMatrix = math::perspective(60.0f, (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
@@ -107,6 +141,10 @@ void render() {
     sgl->clear();
     sgl->useProgram(shader);
     sgl->bindVertexArray(vao);
+    sgl->bindBuffer(ELEMENT_ARRAY_BUFFER, ebo);
+    sgl->drawElement(DRAW_TRIANGLES, 0, 3);
+
+    sgl->bindVertexArray(vao1);
     sgl->bindBuffer(ELEMENT_ARRAY_BUFFER, ebo);
     sgl->drawElement(DRAW_TRIANGLES, 0, 3);
 }

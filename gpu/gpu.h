@@ -56,8 +56,35 @@ public:
         const uint32_t count);
     void perspectiveDivision(VsOutput& vsOutput);
     void trim(VsOutput& vsOutput);
+    bool depthTest(const FsOutput& output);
     void screenMapping(VsOutput& vsOutput);
     void perspectiveRecover(VsOutput& vsOutput);
+
+    // 设置参数相关接口
+    void setEnable(const uint32_t& value, bool val) {
+        switch (value) {
+        case CULL_FACE:
+            mEnableCullFace = val;
+            break;
+        case DEPTH_TEST:
+            mEnableDepthTest = val;
+            break;
+        default:
+            break;
+        }
+    }
+
+    void GPU::frontFace(const uint32_t& value) {
+        mFrontFace = value;
+    }
+
+    void GPU::cullFace(const uint32_t& value) {
+        mCullFace = value;
+    }
+
+    void GPU::depthFunc(const uint32_t& value) {
+        mDepthFunc = value;
+    }
     /* 绘制相关接口 deprecated
     void drawPoint(const uint32_t& x, const uint32_t& y, const RGBA& color);
     void drawLine(const Point& p1, const Point& p2);
@@ -93,4 +120,13 @@ private:
     // Shader和绘制相关
     Shader* mShader { nullptr };
     math::Mat4f mScreenMatrix;
+
+    // cull相关
+    bool mEnableCullFace{ true };
+    uint32_t mFrontFace{ BACK_FACE }; // 逆时针为正面
+    uint32_t mCullFace{ FRONT_FACE_CCW }; // 背面剔除
+
+    // 深度测试相关
+    bool mEnableDepthTest{ true };
+    uint32_t mDepthFunc{ DEPTH_LESS };
 };
