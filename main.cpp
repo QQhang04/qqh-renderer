@@ -8,6 +8,10 @@
 uint32_t WIDTH = 800;
 uint32_t HEIGHT = 600;
 
+// 纹理
+Image* image;
+uint32_t texture;
+
 //三个属性对应vbo
 uint32_t positionVbo = 0;
 uint32_t positionVbo1 = 0;
@@ -23,7 +27,7 @@ uint32_t vao = 0;
 uint32_t vao1 = 0;
 
 // 使用的Shader
-DefaultShader* shader = nullptr;
+TextureShader* shader = nullptr;
 
 //mvp变换矩阵
 math::Mat4f modelMatrix;
@@ -33,7 +37,7 @@ math::Mat4f perspectiveMatrix;
 float angle = 0.0f;
 float camZ = 3.0f;
 void transform() {
-    //angle += 0.01f;
+    angle += 0.01f;
     //camZ -= 0.01f;
     //模型变换
     modelMatrix = math::rotate(math::Mat4f(1.0f), angle, math::vec3f(0.0f, 1.0f, 0.0f));
@@ -43,35 +47,31 @@ void transform() {
 }
 
 void prepare() {
+    image = Image::createImage("assets/textures/pika.png");
+    texture = sgl->genTexture();
+    sgl->bindTexture(texture);
+    sgl->texImage2D(image->mWidth, image->mHeight, image->mData);
+    sgl->texParameter(TEXTURE_FILTER, TEXTURE_FILTER_LINEAR);
+    sgl->texParameter(TEXTURE_WRAP_U, TEXTURE_WRAP_REPEAT);
+    sgl->texParameter(TEXTURE_WRAP_V, TEXTURE_WRAP_REPEAT);
+    sgl->bindTexture(0);
+
     float positions[] = {
-        -0.5f, 0.0f, 0.0f,
-        0.5f,  0.0f, 0.0f,
-         0.25f, 0.5f, 0.0f,
+        -0.5f, -0.288675f, 0.0f,  // 左下
+         0.5f, -0.288675f, 0.0f,  // 右下
+         0.0f,  0.57735f,  0.0f,  // 顶点
     };
 
     float colors[] = {
-        1.0f, 0.0f, 0.0f, 0.5f,
-        0.0f, 1.0f, 0.0f, 0.5f,
-        0.0f, 0.0f, 1.0f, 0.5f,
-    };
-
-    //第二个三角形
-    float positions1[] = {
-        0.3f, 0.0f, -0.3f,
-        0.8f, 0.0f, -0.3f,
-        0.45f, 0.5f, -0.3f,
-    };
-
-    float colors1[] = {
-        1.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, 1.0f, 0.0f, 1.0f,
+        1.0f, 0.0f, 0.0f, 1.0f,
+        0.0f, 1.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f, 1.0f,
     };
 
     float uvs[] = {
-        0.0f, 0.0f,
-        0.0f, 1.0f,
-        1.0f, 0.0f,
+        0.0f, 0.0f,   // 对应左下角
+        1.0f, 0.0f,   // 对应右下角
+        0.5f, 1.0f,   // 顶部中心
     };
 
     uint32_t indices[] = { 0, 1, 2 };
@@ -105,28 +105,7 @@ void prepare() {
     sgl->bindBuffer(ARRAY_BUFFER, 0);
     sgl->bindVertexArray(0);
 
-    /*sgl->printVAO(vao);
-    sgl->printEBO(ebo);*/
-
-    //生成vao1并且绑定
-    vao1 = sgl->genVertexArray();
-    sgl->bindVertexArray(vao1);
-
-    //生成每个vbo1，绑定后，设置属性ID及读取参数
-    auto positionVbo1 = sgl->genBuffer();
-    sgl->bindBuffer(ARRAY_BUFFER, positionVbo1);
-    sgl->bufferData(ARRAY_BUFFER, sizeof(float) * 9, positions1);
-    sgl->vertexAttributePointer(0, 3, 3 * sizeof(float), 0);
-
-    auto colorVbo1 = sgl->genBuffer();
-    sgl->bindBuffer(ARRAY_BUFFER, colorVbo1);
-    sgl->bufferData(ARRAY_BUFFER, sizeof(float) * 12, colors1);
-    sgl->vertexAttributePointer(1, 4, 4 * sizeof(float), 0);
-
-    sgl->bindBuffer(ARRAY_BUFFER, uvVbo);
-    sgl->vertexAttributePointer(2, 2, 2 * sizeof(float), 0);
-
-    shader = new DefaultShader();
+    shader = new TextureShader();
     perspectiveMatrix = math::perspective(60.0f, (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
     auto cameraModelMatrix = math::translate(math::Mat4f(1.0f), math::vec3f(0.0f, 0.0f, 3.0f));
     viewMatrix = math::inverse(cameraModelMatrix);
@@ -137,13 +116,10 @@ void render() {
     shader->mModelMatrix = modelMatrix;
     shader->mViewMatrix = viewMatrix;
     shader->mProjectionMatrix = perspectiveMatrix;
+    shader->mDiffuseTexture = texture;
 
     sgl->clear();
     sgl->useProgram(shader);
-
-    sgl->bindVertexArray(vao1);
-    sgl->bindBuffer(ELEMENT_ARRAY_BUFFER, ebo);
-    sgl->drawElement(DRAW_TRIANGLES, 0, 3);
 
     sgl->bindVertexArray(vao);
     sgl->bindBuffer(ELEMENT_ARRAY_BUFFER, ebo);
@@ -171,5 +147,7 @@ int APIENTRY wWinMain(
         app->show();
     }
 
+    Image::destroyImage(image);
+    sgl->deleteTexture(texture);
     return 0;
 }

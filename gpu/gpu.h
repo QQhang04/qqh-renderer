@@ -5,7 +5,9 @@
 #include "./vao.h"
 #include "./bufferObject.h"
 #include "./shader/defaultShader.h"
+#include "./shader/textureShader.h"
 #include "./clipper.h"
+#include "./texture.h"
 
 #define sgl GPU::getInstance()
 
@@ -61,6 +63,13 @@ public:
     void perspectiveRecover(VsOutput& vsOutput);
     RGBA blend(const FsOutput& output);
 
+    // texture设置相关接口
+    void texImage2D(const uint32_t& width, const uint32_t& height, void* data);
+    void deleteTexture(const uint32_t& texID);
+    uint32_t genTexture();
+    void texParameter(const uint32_t& param, const uint32_t& value);
+    void bindTexture(const uint32_t& texID);
+
     // 设置参数相关接口
     void setEnable(const uint32_t& value, bool val) {
         switch (value) {
@@ -86,22 +95,6 @@ public:
     void GPU::depthFunc(const uint32_t& value) {
         mDepthFunc = value;
     }
-    /* 绘制相关接口 deprecated
-    void drawPoint(const uint32_t& x, const uint32_t& y, const RGBA& color);
-    void drawLine(const Point& p1, const Point& p2);
-    void drawTriangle(const Point& p1, const Point& p2, const Point& p3);
-    void drawImage(const Image* image);
-    void drawImageWithAlpha(const Image* image, const uint32_t& alpha);
-
-    void checkWrap(float& n);
-    */
-
-private:
-    // uv坐标采样
-    /*RGBA sampleNearest(const math::vec2f& uv);
-    RGBA sampleBilinear(const math::vec2f& uv);
-
-    int getImagePosition(Image* image, int x, int y) {return y * image->mWidth + x;}*/
 
 private:
     static GPU* mInstance;
@@ -133,4 +126,9 @@ private:
 
     // 颜色混合相关
     bool mEnableBlending{ true };
+
+    // texture纹理管理相关
+    uint32_t mCurrentTexture{ 0 };
+    uint32_t mTextureCounter{ 0 };
+    std::map<uint32_t, Texture*> mTextureMap;
 };

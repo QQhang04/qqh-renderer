@@ -202,7 +202,7 @@ void GPU::drawElement(const uint32_t& drawMode, const uint32_t& first, const uin
     FsOutput fsOutput;
     uint32_t pixelPos = 0;
     for (uint32_t i = 0; i < rasterOutputs.size(); ++i) {
-        mShader->fragmentShader(rasterOutputs[i], fsOutput);
+        mShader->fragmentShader(rasterOutputs[i], fsOutput, mTextureMap);
 
         // 进行深度测试
         if (mEnableDepthTest && !depthTest(fsOutput)) {
@@ -334,126 +334,56 @@ RGBA GPU::blend(const FsOutput& output) {
 
     return result;
 }
-/* deprecated currently
-void GPU::drawPoint(const uint32_t& x, const uint32_t& y, const RGBA& color) {
-    // 从窗口左下角开始
-    if (x >= app->getWidth() || y >= app->getHeight()) {
+
+// texture:
+void GPU::texImage2D(const uint32_t& width, const uint32_t& height, void* data) {
+    if (!mCurrentTexture) {
         return;
     }
-    uint32_t pixelPos = y * mFrameBuffer->mWidth + x;
 
-    RGBA result = color;
-    if (mEnableBlending) {
-        // 加入blending
-        auto src = color;
-        auto dst = mFrameBuffer->mColorBuffer[pixelPos];
-        float weight = static_cast<float>(src.mA) / 255.0f;
-        result = Raster::lerpRGBA(dst, src, weight);
+    auto iter = mTextureMap.find(mCurrentTexture);
+    if (iter == mTextureMap.end()) {
+        return;
     }
-    mFrameBuffer->mColorBuffer[pixelPos] = result;
+    auto texture = iter->second;
+    texture->setBufferData(width, height, data);
 }
 
-void GPU::drawLine(const Point& p1, const Point& p2) {
-    std::vector<Point> pixels;
-    Raster::rasterizeLine(pixels, p1, p2);
-
-    for (auto& p : pixels) {
-        drawPoint(p.x, p.y, p.color);
+void GPU::deleteTexture(const uint32_t& texID) {
+    auto iter = mTextureMap.find(texID);
+    if (iter != mTextureMap.end()) {
+        delete iter->second;
     }
-}
-
-void GPU::drawTriangle(const Point& p1, const Point& p2, const Point& p3) {
-    std::vector<Point> pixels;
-    Raster::rasterizeTriangle(pixels, p1, p2, p3);
-
-    RGBA resColor;
-    for (auto& p : pixels) {
-        if (mImage) {
-            resColor = mEnableBilinear ? sampleBilinear(p.uv) : sampleNearest(p.uv);
-        }
-        else {
-            resColor = p.color;
-        }
-        drawPoint(p.x, p.y, resColor);
+    else {
+        return;
     }
+
+    mTextureMap.erase(iter);
 }
 
-void GPU::drawImage(const Image* image) {
-    for (uint32_t i = 0; i < image->mWidth; ++i) {
-        for (uint32_t j = 0; j < image->mHeight; ++j) {
-            drawPoint(i, j, image->mData[j * image->mWidth + i]);
-        }
+uint32_t GPU::genTexture() {
+    mTextureCounter++;
+    mTextureMap.insert(std::make_pair(mTextureCounter, new Texture()));
+
+    return mTextureCounter;
+}
+
+void GPU::texParameter(const uint32_t& param, const uint32_t& value) {
+    if (!mCurrentTexture) {
+        return;
     }
-}
 
-void GPU::drawImageWithAlpha(const Image* image, const uint32_t& alpha) {
-    RGBA color;
-    for (uint32_t i = 0; i < image->mWidth; ++i) {
-        for (uint32_t j = 0; j < image->mHeight; ++j) {
-            color = image->mData[j * image->mWidth + i];
-            color.mA = alpha;
-            drawPoint(i, j, color);
-        }
+    auto iter = mTextureMap.find(mCurrentTexture);
+    if (iter == mTextureMap.end()) {
+        return;
     }
+    auto texture = iter->second;
+    texture->setParameter(param, value);
 }
 
-RGBA GPU::sampleNearest(const math::vec2f& uv) {
-    auto myUV = uv;
-    checkWrap(myUV.x); checkWrap(myUV.y);
-    // 四舍五入到最近整数
-    // u = 0 对应 x = 0，u = 1 对应 x = width - 1
-    // v = 0 对应 y = 0，v = 1 对应 y = height - 1
-    int x = std::round(myUV.x * (mImage->mWidth - 1));
-    int y = std::round(myUV.y * (mImage->mHeight - 1));
-
-    int position = y * mImage->mWidth + x;
-    return mImage->mData[position];
+void GPU::bindTexture(const uint32_t& texID) {
+    mCurrentTexture = texID;
 }
-
-RGBA GPU::sampleBilinear(const math::vec2f& uv) {
-    RGBA resColor;
-    auto myuv = uv; // 相当于拷贝了一份 
-    checkWrap(myuv.x); checkWrap(myuv.y);
-
-    float x = uv.x * static_cast<float>(mImage->mWidth - 1);
-    float y = uv.y * static_cast<float>(mImage->mHeight - 1);
-
-    int left = std::floor(x);
-    int right = std::ceil(x);
-    int bottom = std::floor(y);
-    int top = std::ceil(y);
-
-    float yScale = top == bottom ? 1.0 : (top - y) / (top - bottom);
-    float xScale = left == right ? 1.0 : (x - left) / (right - left);
-
-    int posLeftTop = getImagePosition(mImage, left, top);
-    int posLeftBottom = getImagePosition(mImage, left, bottom);
-    int posRightTop = getImagePosition(mImage, right, top);
-    int posRightBottom = getImagePosition(mImage, right, bottom);
-
-    RGBA l = Raster::lerpRGBA(mImage->mData[posLeftTop], mImage->mData[posLeftBottom], yScale);
-    RGBA r = Raster::lerpRGBA(mImage->mData[posRightTop], mImage->mData[posRightBottom], yScale);
-    resColor = Raster::lerpRGBA(l, r, xScale);
-    return resColor;
-}
-
-void GPU::checkWrap(float& n) {
-    if (n > 1.0f || n < 0.0f) {
-        bool mWrap = false; // TODO mock data
-        n = FRACTION(n);
-        switch (mWrap) {
-        case TEXTURE_WRAP_REPEAT:
-            n = FRACTION(n + 1);
-            break;
-        case TEXTURE_WRAP_MIRROR:
-            n = 1.0f - FRACTION(n + 1);
-            break;
-        default:
-            break;
-        }
-    }
-}
-*/
 
 
 

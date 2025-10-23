@@ -29,6 +29,7 @@ namespace math {
         result.mG = static_cast<byte>(static_cast<float>(v2.mG) * weight + (1.0f - weight) * static_cast<float>(v1.mG));
         result.mB = static_cast<byte>(static_cast<float>(v2.mB) * weight + (1.0f - weight) * static_cast<float>(v1.mB));
         result.mA = static_cast<byte>(static_cast<float>(v2.mA) * weight + (1.0f - weight) * static_cast<float>(v1.mA));
+        return result;
     }
 
     static float lerp(const float& v1, const float& v2, const float& v3, const float& weight1, const float& weight2, const float& weight3) {

@@ -2,6 +2,7 @@
 #include "../global/base.h"
 #include "dataStructure.h"
 #include "bufferObject.h"
+#include "./texture.h"
 
 class Shader {
 public:
@@ -19,7 +20,7 @@ public:
         const uint32_t& index
     ) = 0;
 
-    virtual void fragmentShader(const VsOutput& input, FsOutput& output) = 0;
+    virtual void fragmentShader(const VsOutput& input, FsOutput& output, const std::map<uint32_t, Texture*>& textures) = 0;
 public:
     math::vec4f getVector(
         const std::map<uint32_t, BindingDescription>& bindingMap,

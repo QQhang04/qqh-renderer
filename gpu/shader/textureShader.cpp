@@ -1,9 +1,9 @@
-#include "defaultShader.h"
+#include "textureShader.h"
 
-DefaultShader::DefaultShader() {}
-DefaultShader::~DefaultShader() {}
+TextureShader::TextureShader() {}
+TextureShader::~TextureShader() {}
 
-VsOutput DefaultShader::vertexShader(
+VsOutput TextureShader::vertexShader(
     const std::map<uint32_t, BindingDescription>& bindingMap,
     const std::map<uint32_t, BufferObject*>& bufferMap,
     const uint32_t& index
@@ -18,13 +18,20 @@ VsOutput DefaultShader::vertexShader(
     output.mPosition = mProjectionMatrix * mViewMatrix * mModelMatrix * position;
     output.mColor = color;
     output.mUV = uv;
-    
+
     return output;
 }
 
-void DefaultShader::fragmentShader(const VsOutput& input, FsOutput& output, const std::map<uint32_t, Texture*>& textures) {
+void TextureShader::fragmentShader(const VsOutput& input, FsOutput& output, const std::map<uint32_t, Texture*>& textures) {
     output.mPixelPos.x = static_cast<int>(input.mPosition.x);
     output.mPixelPos.y = static_cast<int>(input.mPosition.y);
     output.mDepth = input.mPosition.z;
-    output.mColor = vectorToRGBA(input.mColor);
+
+    auto iter = textures.find(mDiffuseTexture);
+    auto texture = iter->second;
+
+    math::vec4f diffuseColor = texture->getColor(input.mUV.x, input.mUV.y);
+    // 纹理颜色与顶点颜色相乘得到最终颜色，也可以直接使用漫反射颜色
+    math::vec4f finalColor = diffuseColor;
+    output.mColor = vectorToRGBA(finalColor);
 }
