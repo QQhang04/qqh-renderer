@@ -6,6 +6,7 @@
 #include "./bufferObject.h"
 #include "./shader/defaultShader.h"
 #include "./shader/textureShader.h"
+#include "./shader/lightShader.h"
 #include "./clipper.h"
 #include "./texture.h"
 
@@ -116,7 +117,7 @@ private:
     math::Mat4f mScreenMatrix;
 
     // cull相关
-    bool mEnableCullFace{ true };
+    bool mEnableCullFace{ false };
     uint32_t mFrontFace{ BACK_FACE }; // 逆时针为正面
     uint32_t mCullFace{ FRONT_FACE_CCW }; // 背面剔除
 
@@ -125,7 +126,7 @@ private:
     uint32_t mDepthFunc{ DEPTH_LESS }; 
 
     // 颜色混合相关
-    bool mEnableBlending{ true };
+    bool mEnableBlending{ false };
 
     // texture纹理管理相关
     uint32_t mCurrentTexture{ 0 };

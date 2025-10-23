@@ -163,4 +163,6 @@ void Raster::interpolantTriangle(const VsOutput& v0, const VsOutput& v1, const V
     p.mUV = math::lerp(v0.mUV, v1.mUV, v2.mUV, weight0, weight1, weight2);
     // 深度值插值
     p.mPosition.z = math::lerp(v0.mPosition.z, v1.mPosition.z, v2.mPosition.z, weight0, weight1, weight2);
+    // 对法线的插值
+    p.mNormal = math::lerp(v0.mNormal, v1.mNormal, v2.mNormal, weight0, weight1, weight2);
 }

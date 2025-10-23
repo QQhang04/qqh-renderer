@@ -3,6 +3,7 @@
 #include "dataStructure.h"
 #include "bufferObject.h"
 #include "./texture.h"
+#include<algorithm>
 
 class Shader {
 public:
@@ -30,10 +31,16 @@ public:
 
     RGBA vectorToRGBA(const math::vec4f& v) {
         RGBA color;
-        color.mR = v.x * 255.0;
-        color.mG = v.y * 255.0;
-        color.mB = v.z * 255.0;
-        color.mA = v.w * 255.0;
+        //·ÀÖ¹ÑÕÉ«Ô½½ç
+        math::vec4f c = v;
+        c.x = std::clamp(c.x, 0.0f, 1.0f);
+        c.y = std::clamp(c.y, 0.0f, 1.0f);
+        c.z = std::clamp(c.z, 0.0f, 1.0f);
+        c.w = std::clamp(c.w, 0.0f, 1.0f);
+        color.mR = c.x * 255.0;
+        color.mG = c.y * 255.0;
+        color.mB = c.z * 255.0;
+        color.mA = c.w * 255.0;
 
         return color;
     }

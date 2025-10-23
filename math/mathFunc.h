@@ -496,9 +496,9 @@ namespace math {
 
     template<typename T, typename V>
     Matrix44<T> lookAt(const Vector3<V>& camPos, const Vector3<V>& target, const Vector3<V>& top) {
-        Vector3<V>& f = normalize(target - camPos);
-        Vector3<V>& r = normalize(cross(f, top));
-        Vector3<V>& u = normalize(cross(r, f));
+        Vector3<V> f = normalize(target - camPos);
+        Vector3<V> r = normalize(cross(f, top));
+        Vector3<V> u = normalize(cross(r, f));
 
         Matrix44<T> result(static_cast<T>(1));
         // µÚÒ»ÐÐ
