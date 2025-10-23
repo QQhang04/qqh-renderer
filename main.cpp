@@ -8,6 +8,10 @@
 uint32_t WIDTH = 800;
 uint32_t HEIGHT = 600;
 
+// 相机
+Camera* cam = nullptr;
+math::vec3f camPos;
+
 // 纹理
 Image* image;
 uint32_t texture;
@@ -35,18 +39,17 @@ math::Mat4f viewMatrix;
 math::Mat4f perspectiveMatrix;
 
 float angle = 0.0f;
-float camZ = 3.0f;
 void transform() {
     angle += 0.01f;
-    //camZ -= 0.01f;
     //模型变换
     modelMatrix = math::rotate(math::Mat4f(1.0f), angle, math::vec3f(0.0f, 1.0f, 0.0f));
-    // 摄像机移动
-    auto cameraModelMatrix = math::translate(math::Mat4f(1.0f), math::vec3f(0.0f, 0.0f, camZ));
-    viewMatrix = math::inverse(cameraModelMatrix);
 }
 
 void prepare() {
+    camPos = { 0, 0, 3 };
+    cam = new Camera(60.0f, (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f, math::vec3f(0, 1, 0), camPos);
+    app->setCamera(cam);
+
     image = Image::createImage("assets/textures/pika.png");
     texture = sgl->genTexture();
     sgl->bindTexture(texture);
@@ -114,8 +117,8 @@ void prepare() {
 void render() {
     transform();
     shader->mModelMatrix = modelMatrix;
-    shader->mViewMatrix = viewMatrix;
-    shader->mProjectionMatrix = perspectiveMatrix;
+    shader->mViewMatrix = cam->getViewMatrix();
+    shader->mProjectionMatrix = cam->getProjectionMatrix();
     shader->mDiffuseTexture = texture;
 
     sgl->clear();
@@ -143,11 +146,13 @@ int APIENTRY wWinMain(
     prepare();
     while (alive) {
         alive = app->peekMessage();
+        cam->update();
         render();
         app->show();
     }
 
     Image::destroyImage(image);
     sgl->deleteTexture(texture);
+    delete cam;
     return 0;
 }

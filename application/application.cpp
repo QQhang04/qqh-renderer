@@ -77,8 +77,42 @@ void Application::handleMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             EndPaint(hWnd, &ps);
+            break;
         }
-        break;
+        case WM_RBUTTONDOWN: {
+            if (mCamera) {
+                mCamera->onRMouseDown(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+            }
+            break;
+        }
+
+        case WM_RBUTTONUP: {
+            if (mCamera) {
+                mCamera->onRMouseUp(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+            }
+            break;
+        }
+
+        case WM_MOUSEMOVE: {
+            if (mCamera) {
+                mCamera->onMouseMove(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+            }
+        }
+
+        case WM_KEYDOWN: {
+            if (mCamera) {
+                mCamera->onKeyDown(wParam);
+            }
+            break;
+        }
+
+        case WM_KEYUP: {
+            if (mCamera) {
+                mCamera->onKeyUp(wParam);
+            }
+            break;
+        }
+
         case WM_DESTROY: {
             PostQuitMessage(0); // 发出线程终止请求
             mAlive = false;

@@ -1,6 +1,8 @@
 #pragma once
 #include "../global/base.h"
+#include "camera.h"
 #include <Windows.h>
+#include <windowsx.h>
 
 #define app Application::getInstance()
 
@@ -24,12 +26,18 @@ public:
     uint32_t getHeight() const { return mHeight; }
     void* getCanvas() const { return mCanvasBuffer; }
 
+    void setCamera(Camera* cam) {
+        this->mCamera = cam;
+    }
+
 private:
     BOOL createWindow(HINSTANCE hInstance);
     ATOM registerWindowClass(HINSTANCE hInstance);
 
 private:
     static Application* mInstance;
+
+    Camera* mCamera{ nullptr };
 
     bool mAlive{ true };
 

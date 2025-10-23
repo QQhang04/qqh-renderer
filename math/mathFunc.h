@@ -493,4 +493,32 @@ namespace math {
 
         return result;
     }
+
+    template<typename T, typename V>
+    Matrix44<T> lookAt(const Vector3<V>& camPos, const Vector3<V>& target, const Vector3<V>& top) {
+        Vector3<V>& f = normalize(target - camPos);
+        Vector3<V>& r = normalize(cross(f, top));
+        Vector3<V>& u = normalize(cross(r, f));
+
+        Matrix44<T> result(static_cast<T>(1));
+        // 第一行
+        result.set(0, 0, r.x);
+        result.set(0, 1, r.y);
+        result.set(0, 2, r.z);
+        result.set(0, 3, -dot(r, camPos));
+
+        // 第二行
+        result.set(1, 0, u.x);
+        result.set(1, 1, u.y);
+        result.set(1, 2, u.z);
+        result.set(1, 3, -dot(u, camPos));
+
+        // 第三行
+        result.set(2, 0, -f.x);
+        result.set(2, 1, -f.y);
+        result.set(2, 2, -f.z);
+        result.set(2, 3, dot(f, camPos));
+
+        return result;
+    }
 }

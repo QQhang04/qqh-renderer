@@ -163,6 +163,9 @@ void GPU::drawElement(const uint32_t& drawMode, const uint32_t& first, const uin
     // 4 Clip裁剪
     std::vector<VsOutput> clipOutputs;
     Clipper::doClipSpace(DRAW_TRIANGLES, vsOutputs, clipOutputs);
+    if (clipOutputs.size() == 0) {
+        return;
+    }
 
     // 4 NDC处理阶段
     for (auto& output : clipOutputs) {
