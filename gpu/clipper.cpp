@@ -102,7 +102,7 @@ void Clipper::sutherlandHodgman(const uint32_t& drawMode, const std::vector<VsOu
 			auto last = inputs[(p - 1 + inputs.size()) % inputs.size()];
 
 			if (inside(current.mPosition, clipPlanes[i])) {
-				//��������������أ���������������һ�����㣬��׼��ͷ���㽻��
+				// current is inside, last is outside – add intersection before current when needed
 				if (drawMode != DRAW_LINES || p != inputs.size() - 1) {
 					if (!inside(last.mPosition, clipPlanes[i])) {
 						auto intersectPoint = intersect(last, current, clipPlanes[i]);
@@ -127,7 +127,7 @@ bool Clipper::inside(const math::vec4f& point, const math::vec4f& plane) {
 	return math::dot(plane, point) > 0;
 }
 
-// ����ֻ�ܲ�ֵƽ������ĵ�
+// intersect point between edge and clipping plane
 VsOutput Clipper::intersect(const VsOutput& last, const VsOutput& current, const math::vec4f& plane) {
 	VsOutput output;
 
