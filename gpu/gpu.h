@@ -85,15 +85,15 @@ public:
         }
     }
 
-    void GPU::frontFace(const uint32_t& value) {
+    void frontFace(const uint32_t& value) {
         mFrontFace = value;
     }
 
-    void GPU::cullFace(const uint32_t& value) {
+    void cullFace(const uint32_t& value) {
         mCullFace = value;
     }
 
-    void GPU::depthFunc(const uint32_t& value) {
+    void depthFunc(const uint32_t& value) {
         mDepthFunc = value;
     }
 

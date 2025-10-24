@@ -11,7 +11,7 @@ VsOutput DefaultShader::vertexShader(
     VsOutput output;
 
     math::vec4f position = getVector(bindingMap, bufferMap, 0, index);
-    position.w = 1.0f; //变化为齐次坐标
+    position.w = 1.0f;
     math::vec4f color = getVector(bindingMap, bufferMap, 1, index);
     math::vec2f uv = getVector(bindingMap, bufferMap, 2, index);
 

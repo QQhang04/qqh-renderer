@@ -1,25 +1,25 @@
-#pragma once
+ï»¿#pragma once
 #include "../global/base.h"
 #include "../math/math.h"
 
-//VAOÖ®ÖĞ£¬ÓÃÓÚÃèÊöÊôĞÔ¶ÁÈ¡·½Ê½µÄDescription
+//VAOä¹‹ä¸­ï¼Œç”¨äºæè¿°å±æ€§è¯»å–æ–¹å¼çš„Description
 struct BindingDescription {
-    uint32_t    mVbold{ 0 };
-    size_t      mItemSize{ 0 };
-    size_t      mStride{ 0 };
-    size_t      mOffset{ 0 };
+	uint32_t    mVbold{ 0 };
+	size_t      mItemSize{ 0 };
+	size_t      mStride{ 0 };
+	size_t      mOffset{ 0 };
 };
 
 struct VsOutput {
-    float mOneOverW{ 0.0f };
-    math::vec4f mPosition{ 0.0f, 0.0f, 0.0f, 1.0f };
-    math::vec4f mColor;//´Ë´¦ÑÕÉ«¸ÄÎª0.0-1.0Ö®¼ä±íÊ¾0-255µÄÁ¿
-    math::vec2f mUV;
-    math::vec3f mNormal;
+	float mOneOverW{ 0.0f };
+	math::vec4f mPosition{ 0.0f, 0.0f, 0.0f, 1.0f };
+	math::vec4f mColor;//æ­¤å¤„é¢œè‰²æ”¹ä¸º0.0-1.0ä¹‹é—´è¡¨ç¤º0-255çš„é‡
+	math::vec2f mUV;
+	math::vec3f mNormal;
 };
 
 struct FsOutput {
-    math::vec2i mPixelPos;
-    float mDepth;
-    RGBA mColor;//´Ë´¦Ê¹ÓÃ0-255À´½øĞĞÑÕÉ«ÏÔÊ¾
+	math::vec2i mPixelPos;
+	float mDepth;
+	RGBA mColor;//æ­¤å¤„ä½¿ç”¨0-255æ¥è¿›è¡Œé¢œè‰²æ˜¾ç¤º
 };

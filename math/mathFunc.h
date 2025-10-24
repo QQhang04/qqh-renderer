@@ -6,7 +6,7 @@
 
 namespace math {
 
-    //¸÷Ààlerpº¯Êı
+    //å„ç±»lerpå‡½æ•°
     static float lerp(const float& v1, const float& v2, const float& weight) {
         return v2 * weight + (1.0f - weight) * v1;
     }
@@ -49,7 +49,7 @@ namespace math {
     }
 
     /*
-     * ±êÁ¿ÓëÏòÁ¿
+     * æ ‡é‡ä¸å‘é‡
      * s * v
      */
     template<typename T, typename S>
@@ -68,7 +68,7 @@ namespace math {
     }
 
     /*
-     * ÏòÁ¿ÓëÏòÁ¿
+     * å‘é‡ä¸å‘é‡
      * v = v0 * v1
      */
     template<typename T>
@@ -87,7 +87,7 @@ namespace math {
     }
 
     /*
-     * ¾ø¶ÔÖµ
+     * ç»å¯¹å€¼
      */
     template<typename T>
     inline Vector2<T> abs(const Vector2<T>& v) {
@@ -105,7 +105,7 @@ namespace math {
     }
 
     /*
-     * µã³Ëº¯Êı
+     * ç‚¹ä¹˜å‡½æ•°
      */
     template<typename T>
     inline T dot(const Vector2<T>& v1, const Vector2<T>& v2) {
@@ -122,7 +122,7 @@ namespace math {
         return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z + v1.w * v2.w;
     }
 
-    /* ²æ³Ëº¯Êı */
+    /* å‰ä¹˜å‡½æ•° */
     template<typename T>
     inline T cross(const Vector2<T>& v1, const Vector2<T>& v2) {
         return v1.x * v2.y - v1.y * v2.x;
@@ -140,7 +140,7 @@ namespace math {
         );
     }
 
-    /* Çó³¤¶ÈÆ½·½ */
+    /* æ±‚é•¿åº¦å¹³æ–¹ */
     template<typename T>
     inline float lengthSquared(const Vector2<T>& v) {
         return v.x * v.x + v.y * v.y;
@@ -156,7 +156,7 @@ namespace math {
         return v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w;
     }
 
-    /* Çó³¤¶È */
+    /* æ±‚é•¿åº¦ */
     template<typename T>
     inline T length(const Vector2<T>& v) {
         return std::sqrt(lengthSquared(v));
@@ -172,7 +172,7 @@ namespace math {
         return std::sqrt(lengthSquared(v));
     }
 
-    /* ¹éÒ»»¯ */
+    /* å½’ä¸€åŒ– */
     template<typename T>
     inline Vector2<T> normalize(const Vector2<T>& v) {
         return v / length(v);
@@ -236,7 +236,7 @@ namespace math {
         auto m2Col1 = m2.getColumn(1);
         auto m2Col2 = m2.getColumn(2);
 
-        // Ê¹ÓÃÁĞÊÓÍ¼½øĞĞ¼ÆËã
+        // ä½¿ç”¨åˆ—è§†å›¾è¿›è¡Œè®¡ç®—
         Vector3<T> rCol0, rCol1, rCol2;
         rCol0 = m1Col0 * m2Col0[0] + m1Col1 * m2Col0[1] + m1Col2 * m2Col0[2];
         rCol1 = m1Col0 * m2Col1[0] + m1Col1 * m2Col1[1] + m1Col2 * m2Col1[2];
@@ -262,7 +262,7 @@ namespace math {
         auto m2Col2 = m2.getColumn(2);
         auto m2Col3 = m2.getColumn(3);
 
-        // Ê¹ÓÃÁĞÊÓÍ¼½øĞĞ¼ÆËã
+        // ä½¿ç”¨åˆ—è§†å›¾è¿›è¡Œè®¡ç®—
         Vector4<T> rCol0, rCol1, rCol2, rCol3;
         rCol0 = m1Col0 * m2Col0[0] + m1Col1 * m2Col0[1] + m1Col2 * m2Col0[2] + m1Col3 * m2Col0[3];
         rCol1 = m1Col0 * m2Col1[0] + m1Col1 * m2Col1[1] + m1Col2 * m2Col1[2] + m1Col3 * m2Col1[3];
@@ -282,7 +282,7 @@ namespace math {
     Matrix44<T> inverse(const Matrix44<T>& src) {
         Matrix44<T> result(static_cast<T>(1));
 
-        // ¼ÆËãÃ¿¸ö±ØĞëµÄ2*2¾ØÕóĞĞÁĞÊ½£¬ÏÂ±êÊÇ×óÉÏ½Çµ½ÓÒÏÂ½Ç
+        // è®¡ç®—æ¯ä¸ªå¿…é¡»çš„2*2çŸ©é˜µè¡Œåˆ—å¼ï¼Œä¸‹æ ‡æ˜¯å·¦ä¸Šè§’åˆ°å³ä¸‹è§’
         T D_22_33 = src.get(2, 2) * src.get(3, 3) - src.get(2, 3) * src.get(3, 2);
 
         T D_12_33 = src.get(1, 2) * src.get(2, 3) - src.get(1, 3) * src.get(2, 2);
@@ -307,7 +307,7 @@ namespace math {
         T D_01_32 = src.get(0, 1) * src.get(3, 2) - src.get(0, 2) * src.get(3, 1);
         T D_01_33 = src.get(0, 1) * src.get(3, 3) - src.get(0, 3) * src.get(3, 1);
 
-        // ¼ÆËã°éËæ¾ØÕóµÄÃ¿ÁĞÊı¾İ
+        // è®¡ç®—ä¼´éšçŸ©é˜µçš„æ¯åˆ—æ•°æ®
         Vector4<T> col0, col1, col2, col3;
         col0.x = src.get(1, 1) * D_22_33 - src.get(2, 1) * D_12_33 + src.get(3, 1) * D_12_23;
         col0.y = -(src.get(1, 0) * D_22_33 - src.get(2, 0) * D_12_33 + src.get(3, 0) * D_12_23);
@@ -334,7 +334,7 @@ namespace math {
         result.setColumn(col2, 2);
         result.setColumn(col3, 3);
 
-        // ¼ÆËãĞĞÁĞÊ½
+        // è®¡ç®—è¡Œåˆ—å¼
         Vector4<T> row0(result.get(0, 0), result.get(0, 1), result.get(0, 2), result.get(0, 3));
         Vector4<T> colum0 = src.getColumn(0);
         T determinant = dot(row0, colum0);
@@ -346,10 +346,10 @@ namespace math {
         return result * oneOverDeterminant;
     }
 
-    // ¿Õ¼ä±ä»»¹¦ÄÜ
+    // ç©ºé—´å˜æ¢åŠŸèƒ½
     // scale translate rotate
-    // ±ä»»²Ù×÷×÷ÓÃÓÚÄ³Ò»×é×ø±ê»ù£¬¼´±ä»»ÊÇÔÚµ±Ç°Ä£ĞÍ×ø±êÏµÄÚ
-    // µÚÒ»¸ö²ÎÊıÊÇÄÄ¸ö¾ØÕó²Ù×÷£¨¼´µ±Ç°Ä£ĞÍ×ø±êÏµ£©
+    // å˜æ¢æ“ä½œä½œç”¨äºæŸä¸€ç»„åæ ‡åŸºï¼Œå³å˜æ¢æ˜¯åœ¨å½“å‰æ¨¡å‹åæ ‡ç³»å†…
+    // ç¬¬ä¸€ä¸ªå‚æ•°æ˜¯å“ªä¸ªçŸ©é˜µæ“ä½œï¼ˆå³å½“å‰æ¨¡å‹åæ ‡ç³»ï¼‰
     template<typename T, typename V>
     Matrix44<T> scale(const Matrix44<T>& src, V x, V y, V z) {
         Matrix44<T> result;
@@ -391,8 +391,8 @@ namespace math {
     }
 
     /*
-    »áÏÈ°Ñ´¿Ğı×ª¾ØÕó·ÅÔÚÓÒ±ß×örotate±ä»»£¬¼´ÏÈ×öÍêĞı×ª£¬ÔÙ¼ÓÉÏÔ­À´µÄÆ½ÒÆ
-    ÔÚµ±Ç°Ä£ĞÍ×ø±êÏµÏÂĞı×ª
+    ä¼šå…ˆæŠŠçº¯æ—‹è½¬çŸ©é˜µæ”¾åœ¨å³è¾¹åšrotateå˜æ¢ï¼Œå³å…ˆåšå®Œæ—‹è½¬ï¼Œå†åŠ ä¸ŠåŸæ¥çš„å¹³ç§»
+    åœ¨å½“å‰æ¨¡å‹åæ ‡ç³»ä¸‹æ—‹è½¬
     */
     template<typename T>
     Matrix44<T> rotate(const Matrix44<T>& src, float angle, const Vector3<T>& v) {
@@ -404,7 +404,7 @@ namespace math {
 
         Matrix44<T> Rotate;
 
-        // ÉèÖÃĞı×ª¾ØÕó
+        // è®¾ç½®æ—‹è½¬çŸ©é˜µ
         Rotate.set(0, 0, c + temp[0] * axis[0]);
         Rotate.set(1, 0, temp[0] * axis[1] + s * axis[2]);
         Rotate.set(2, 0, temp[0] * axis[2] - s * axis[1]);
@@ -427,7 +427,7 @@ namespace math {
         auto srcCol2 = src.getColumn(2);
         auto srcCol3 = src.getColumn(3);
 
-        // ¼ÆËãĞÂµÄÁĞÏòÁ¿
+        // è®¡ç®—æ–°çš„åˆ—å‘é‡
         auto col0 = srcCol0 * rCol0[0] + srcCol1 * rCol0[1] + srcCol2 * rCol0[2];
         auto col1 = srcCol0 * rCol1[0] + srcCol1 * rCol1[1] + srcCol2 * rCol1[2];
         auto col2 = srcCol0 * rCol2[0] + srcCol1 * rCol2[1] + srcCol2 * rCol2[2];
@@ -443,23 +443,23 @@ namespace math {
     }
 
 
-    //Õı½»Í¶Ó°º¯Êı
+    //æ­£äº¤æŠ•å½±å‡½æ•°
     template<typename T>
-    Matrix44<T> orthographic(T left, T right, T bottom, T top, T near, T far) {
+    Matrix44<T> orthographic(T left, T right, T bottom, T top, T _near, T _far) {
         Matrix44<T> result(static_cast<T>(1));
 
         result.set(0, 0, static_cast<T>(2) / (right - left));
         result.set(0, 3, -(right + left) / (right - left));
         result.set(1, 1, static_cast<T>(2) / (top - bottom));
         result.set(1, 3, -(top + bottom) / (top - bottom));
-        result.set(2, 2, -static_cast<T>(2) / (far - near));
-        result.set(1, 3, -(far + near) / (far - near));
+        result.set(2, 2, -static_cast<T>(2) / (_far - _near));
+        result.set(1, 3, -(_far + _near) / (_far - _near));
 
         return result;
     }
 
-    //Í¸ÊÓÍ¶Ó°º¯Êı
-    //ÕâÀïµÄfovyÊÇy·½ÏòµÄfov
+    //é€è§†æŠ•å½±å‡½æ•°
+    //è¿™é‡Œçš„fovyæ˜¯yæ–¹å‘çš„fov
     template<typename T>
     Matrix44<T> perspective(T fovy, T aspect, T n, T f) {
         T tanHalfFovy = static_cast<T>(std::tan(static_cast<double>(DEG2RAD(static_cast<double>(fovy) / 2.0))));
@@ -474,7 +474,7 @@ namespace math {
         return result;
     }
 
-    //ÆÁÄ»¿Õ¼ä±ä»»º¯Êı
+    //å±å¹•ç©ºé—´å˜æ¢å‡½æ•°
     template<typename T>
     Matrix44<T> screenMatrix(const uint32_t& width, const uint32_t& height) {
         Matrix44<T> result(static_cast<T>(1));
@@ -501,19 +501,19 @@ namespace math {
         Vector3<V> u = normalize(cross(r, f));
 
         Matrix44<T> result(static_cast<T>(1));
-        // µÚÒ»ĞĞ
+        // ç¬¬ä¸€è¡Œ
         result.set(0, 0, r.x);
         result.set(0, 1, r.y);
         result.set(0, 2, r.z);
         result.set(0, 3, -dot(r, camPos));
 
-        // µÚ¶şĞĞ
+        // ç¬¬äºŒè¡Œ
         result.set(1, 0, u.x);
         result.set(1, 1, u.y);
         result.set(1, 2, u.z);
         result.set(1, 3, -dot(u, camPos));
 
-        // µÚÈıĞĞ
+        // ç¬¬ä¸‰è¡Œ
         result.set(2, 0, -f.x);
         result.set(2, 1, -f.y);
         result.set(2, 2, -f.z);

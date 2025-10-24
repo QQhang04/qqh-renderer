@@ -3,7 +3,7 @@
 math::vec4f Shader::getVector(
     const std::map<uint32_t, BindingDescription>& bindingMap,
     const std::map<uint32_t, BufferObject*>& bufferMap,
-    const uint32_t& attributeLocation, //当前属性的编号
+    const uint32_t& attributeLocation, //褰撳墠灞炴�х殑缂栧彿
     const uint32_t& index) {
     auto desIter = bindingMap.find(attributeLocation);
     if (desIter == bindingMap.end()) {

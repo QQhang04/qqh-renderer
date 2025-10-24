@@ -102,7 +102,7 @@ void Clipper::sutherlandHodgman(const uint32_t& drawMode, const std::vector<VsOu
 			auto last = inputs[(p - 1 + inputs.size()) % inputs.size()];
 
 			if (inside(current.mPosition, clipPlanes[i])) {
-				//ÕâÀï¼ÓÁËÏŞÖÆÒòËØ£¬ÏßÌõÈç¹ûµ½ÁË×îºóÒ»¸ö¶¥µã£¬²»×¼»ØÍ·¼ÆËã½»µã
+				//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ã£¬ï¿½ï¿½×¼ï¿½ï¿½Í·ï¿½ï¿½ï¿½ã½»ï¿½ï¿½
 				if (drawMode != DRAW_LINES || p != inputs.size() - 1) {
 					if (!inside(last.mPosition, clipPlanes[i])) {
 						auto intersectPoint = intersect(last, current, clipPlanes[i]);
@@ -127,7 +127,7 @@ bool Clipper::inside(const math::vec4f& point, const math::vec4f& plane) {
 	return math::dot(plane, point) > 0;
 }
 
-// ÕâÀïÖ»ÄÜ²åÖµÆ½ÃæÁ½²àµÄµã
+// ï¿½ï¿½ï¿½ï¿½Ö»ï¿½Ü²ï¿½ÖµÆ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½
 VsOutput Clipper::intersect(const VsOutput& last, const VsOutput& current, const math::vec4f& plane) {
 	VsOutput output;
 

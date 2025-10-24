@@ -23,7 +23,11 @@ void Texture::setBufferData(
 math::vec4f Texture::getColor(float u, float v) {
     RGBA resColor;
 
-    //´¦Àíuv×ø±ê
+    if (u < 0 || u > 1 || v < 0 || v > 1)
+    {
+        return math::vec4f(1,1,1,1);
+    }
+    //ï¿½ï¿½ï¿½ï¿½uvï¿½ï¿½ï¿½ï¿½
     checkWrap(u, mWrapU);
     checkWrap(v, mWrapV);
 

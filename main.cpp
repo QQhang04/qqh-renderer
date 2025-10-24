@@ -51,7 +51,7 @@ void transform() {
 }
 
 void prepare() {
-    camPos = { 0, -1, 3 };
+    camPos = { 0, 1, 3 };
     cam = new Camera(60.0f, (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f, math::vec3f(0, 1, 0), camPos);
     app->setCamera(cam);
 

@@ -5,33 +5,33 @@
 
 /*
  * class Raster
- * ¶ÔÍâÌá¹©¾²Ì¬º¯ÊýÊý¾Ý½Ó¿Ú£¬´«ÈëÀëÉ¢µÄÍ¼Ôªµã£¬·µ»Ø¹âÕ¤»¯ºóµÄÏñËØÊý×é
+ * ï¿½ï¿½ï¿½ï¿½ï¿½á¹©ï¿½ï¿½Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý½Ó¿Ú£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¢ï¿½ï¿½Í¼Ôªï¿½ã£¬ï¿½ï¿½ï¿½Ø¹ï¿½Õ¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
  */
 class Raster {
 public:
-    Raster() {};
-    ~Raster() {};
+	Raster() {};
+	~Raster() {};
 
-    static void Raster::rasterize(
-        std::vector<VsOutput>& results,
-        const uint32_t& drawMode,
-        const std::vector<VsOutput>& inputs);
+	static void rasterize(
+		std::vector<VsOutput>& results,
+		const uint32_t& drawMode,
+		const std::vector<VsOutput>& inputs);
 
 private:
-    static void rasterizeLine(
-        std::vector<VsOutput>& results,
-        const VsOutput& v0,
-        const VsOutput& v1
-    );
+	static void rasterizeLine(
+		std::vector<VsOutput>& results,
+		const VsOutput& v0,
+		const VsOutput& v1
+	);
 
-    static void interpolantLine(const VsOutput& v0, const VsOutput& v1, VsOutput& target);
+	static void interpolantLine(const VsOutput& v0, const VsOutput& v1, VsOutput& target);
 
-    static void rasterizeTriangle(
-        std::vector<VsOutput>& results,
-        const VsOutput& v0,
-        const VsOutput& v1,
-        const VsOutput& v2
-    );
+	static void rasterizeTriangle(
+		std::vector<VsOutput>& results,
+		const VsOutput& v0,
+		const VsOutput& v1,
+		const VsOutput& v2
+	);
 
-    static void interpolantTriangle(const VsOutput& v0, const VsOutput& v1, const VsOutput& v2, VsOutput& p);
+	static void interpolantTriangle(const VsOutput& v0, const VsOutput& v1, const VsOutput& v2, VsOutput& p);
 };

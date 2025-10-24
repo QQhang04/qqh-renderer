@@ -13,14 +13,14 @@ namespace math {
     template<typename T>
     class Vector2 {
     public:
-        // ===== ¹¹Ôìº¯Êı =====
+        // ===== æ„é€ å‡½æ•° =====
         Vector2() : x(0), y(0) {}
         Vector2(T x, T y) : x(x), y(y) {}
         Vector2(const Vector2<T>& v) : x(v.x), y(v.y) {}
         Vector2(const Vector3<T>& v) : x(v.x), y(v.y) {}
         Vector2(const Vector4<T>& v) : x(v.x), y(v.y) {}
 
-        // ===== Ë÷Òı·ÃÎÊ =====
+        // ===== ç´¢å¼•è®¿é—® =====
         T operator[](int i) const {
             assert(i >= 0 && i < 2);
             return (i == 0) ? x : y;
@@ -31,7 +31,7 @@ namespace math {
             return (i == 0) ? x : y;
         }
 
-        // ===== ¸³ÖµÔËËã·û =====
+        // ===== èµ‹å€¼è¿ç®—ç¬¦ =====
         Vector2<T>& operator=(const Vector2<T>& v) {
             x = v.x; y = v.y;
             return *this;
@@ -47,7 +47,7 @@ namespace math {
             return *this;
         }
 
-        // ===== ÏòÁ¿¼Ó·¨ =====
+        // ===== å‘é‡åŠ æ³• =====
         Vector2<T> operator+(const Vector2<T>& v) const {
             return Vector2<T>(x + v.x, y + v.y);
         }
@@ -57,7 +57,7 @@ namespace math {
             return *this;
         }
 
-        // ===== ÏòÁ¿¼õ·¨ =====
+        // ===== å‘é‡å‡æ³• =====
         Vector2<T> operator-(const Vector2<T>& v) const {
             return Vector2<T>(x - v.x, y - v.y);
         }
@@ -67,12 +67,12 @@ namespace math {
             return *this;
         }
 
-        // ===== È¡¸ººÅ =====
+        // ===== å–è´Ÿå· =====
         Vector2<T> operator-() const {
             return Vector2<T>(-x, -y);
         }
 
-        // ===== ±êÁ¿³Ë·¨ =====
+        // ===== æ ‡é‡ä¹˜æ³• =====
         Vector2<T> operator*(T s) const {
             return Vector2<T>(x * s, y * s);
         }
@@ -82,12 +82,12 @@ namespace math {
             return *this;
         }
 
-        // ===== ÏòÁ¿³Ë·¨ =====
+        // ===== å‘é‡ä¹˜æ³• =====
         Vector2<T> operator*(Vector2<T> s) const {
             return Vector2<T>(x * s.x, y * s.y);
         }
 
-        // ===== ±êÁ¿³ı·¨ =====
+        // ===== æ ‡é‡é™¤æ³• =====
         Vector2<T> operator/(T s) const {
             assert(s != 0);
             float inv = static_cast<T>(1) / s;
@@ -101,7 +101,7 @@ namespace math {
             return *this;
         }
 
-        // ===== ±È½Ï =====
+        // ===== æ¯”è¾ƒ =====
         bool operator==(const Vector2<T>& v) const {
             return x == v.x && y == v.y;
         }
@@ -110,7 +110,7 @@ namespace math {
             return !(*this == v);
         }
 
-        // ===== ´òÓ¡ =====
+        // ===== æ‰“å° =====
         void print() const {
             std::cout << "Vector2(" << x << ", " << y << ")" << std::endl;
         }
@@ -122,14 +122,14 @@ namespace math {
     template<typename T>
     class Vector3 {
     public:
-        // ===== ¹¹Ôìº¯Êı =====
+        // ===== æ„é€ å‡½æ•° =====
         Vector3() : x(0), y(0), z(0) {}
         Vector3(T x, T y, T z) : x(x), y(y), z(z) {}
         Vector3(const Vector3<T>& v) : x(v.x), y(v.y), z(v.z) {}
         Vector3(const Vector2<T>& v, T z = 0) : x(v.x), y(v.y), z(z) {}
         Vector3(const Vector4<T>& v) : x(v.x), y(v.y), z(v.z) {}
 
-        // ===== Ë÷Òı·ÃÎÊ =====
+        // ===== ç´¢å¼•è®¿é—® =====
         T operator[](int i) const {
             assert(i >= 0 && i < 3);
             return (i == 0) ? x : (i == 1 ? y : z);
@@ -140,7 +140,7 @@ namespace math {
             return (i == 0) ? x : (i == 1 ? y : z);
         }
 
-        // ===== ¸³ÖµÔËËã·û =====
+        // ===== èµ‹å€¼è¿ç®—ç¬¦ =====
         Vector3<T>& operator=(const Vector3<T>& v) {
             x = v.x; y = v.y; z = v.z;
             return *this;
@@ -156,7 +156,7 @@ namespace math {
             return *this;
         }
 
-        // ===== ÏòÁ¿¼Ó·¨ =====
+        // ===== å‘é‡åŠ æ³• =====
         Vector3<T> operator+(const Vector3<T>& v) const {
             return Vector3<T>(x + v.x, y + v.y, z + v.z);
         }
@@ -166,7 +166,7 @@ namespace math {
             return *this;
         }
 
-        // ===== ÏòÁ¿¼õ·¨ =====
+        // ===== å‘é‡å‡æ³• =====
         Vector3<T> operator-(const Vector3<T>& v) const {
             return Vector3<T>(x - v.x, y - v.y, z - v.z);
         }
@@ -176,12 +176,12 @@ namespace math {
             return *this;
         }
 
-        // ===== È¡¸ººÅ =====
+        // ===== å–è´Ÿå· =====
         Vector3<T> operator-() const {
             return Vector3<T>(-x, -y, -z);
         }
 
-        // ===== ±êÁ¿³Ë·¨ =====
+        // ===== æ ‡é‡ä¹˜æ³• =====
         Vector3<T> operator*(T s) const {
             return Vector3<T>(x * s, y * s, z * s);
         }
@@ -191,7 +191,7 @@ namespace math {
             return *this;
         }
 
-        // ===== ±êÁ¿³ı·¨ =====
+        // ===== æ ‡é‡é™¤æ³• =====
         Vector3<T> operator/(T s) const {
             assert(s != 0);
             T inv = static_cast<T>(1) / s;
@@ -205,7 +205,7 @@ namespace math {
             return *this;
         }
 
-        // ===== ±È½Ï =====
+        // ===== æ¯”è¾ƒ =====
         bool operator==(const Vector3<T>& v) const {
             return x == v.x && y == v.y && z == v.z;
         }
@@ -214,7 +214,7 @@ namespace math {
             return !(*this == v);
         }
 
-        // ===== ´òÓ¡ =====
+        // ===== æ‰“å° =====
         void print() const {
             std::cout << "Vector3(" << x << ", " << y << ", " << z << ")" << std::endl;
         }
@@ -226,14 +226,14 @@ namespace math {
     template<typename T>
     class Vector4 {
     public:
-        // ===== ¹¹Ôìº¯Êı =====
+        // ===== æ„é€ å‡½æ•° =====
         Vector4() : x(0), y(0), z(0), w(0) {}
         Vector4(T x, T y, T z, T w) : x(x), y(y), z(z), w(w) {}
         Vector4(const Vector4<T>& v) : x(v.x), y(v.y), z(v.z), w(v.w) {}
         Vector4(const Vector2<T>& v, T z = 0, T w = 0) : x(v.x), y(v.y), z(z), w(w) {}
         Vector4(const Vector3<T>& v, T w = 0) : x(v.x), y(v.y), z(v.z), w(w) {}
 
-        // ===== Ë÷Òı·ÃÎÊ =====
+        // ===== ç´¢å¼•è®¿é—® =====
         T operator[](int i) const {
             assert(i >= 0 && i < 4);
             switch (i) {
@@ -254,7 +254,7 @@ namespace math {
             }
         }
 
-        // ===== ¸³ÖµÔËËã·û =====
+        // ===== èµ‹å€¼è¿ç®—ç¬¦ =====
         Vector4<T>& operator=(const Vector4<T>& v) {
             x = v.x; y = v.y; z = v.z; w = v.w;
             return *this;
@@ -270,7 +270,7 @@ namespace math {
             return *this;
         }
 
-        // ===== ÏòÁ¿¼Ó¼õ =====
+        // ===== å‘é‡åŠ å‡ =====
         Vector4<T> operator+(const Vector4<T>& v) const {
             return Vector4<T>(x + v.x, y + v.y, z + v.z, w + v.w);
         }
@@ -289,12 +289,12 @@ namespace math {
             return *this;
         }
 
-        // ===== È¡¸ººÅ =====
+        // ===== å–è´Ÿå· =====
         Vector4<T> operator-() const {
             return Vector4<T>(-x, -y, -z, -w);
         }
 
-        // ===== ±êÁ¿³Ë³ı =====
+        // ===== æ ‡é‡ä¹˜é™¤ =====
         Vector4<T> operator*(T s) const {
             return Vector4<T>(x * s, y * s, z * s, w * s);
         }
@@ -317,7 +317,7 @@ namespace math {
             return *this;
         }
 
-        // ===== ±È½Ï =====
+        // ===== æ¯”è¾ƒ =====
         bool operator==(const Vector4<T>& v) const {
             return x == v.x && y == v.y && z == v.z && w == v.w;
         }
@@ -326,7 +326,7 @@ namespace math {
             return !(*this == v);
         }
 
-        // ===== ´òÓ¡ =====
+        // ===== æ‰“å° =====
         void print() const {
             std::cout << "Vector4(" << x << ", " << y << ", " << z << ", " << w << ")" << std::endl;
         }

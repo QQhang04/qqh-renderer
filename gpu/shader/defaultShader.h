@@ -1,23 +1,23 @@
-#pragma once
+ï»¿#pragma once
 #include "../shader.h"
 #include "../../math/math.h"
 
 class DefaultShader : public Shader {
 public:
-    DefaultShader();
-    ~DefaultShader();
+	DefaultShader();
+	~DefaultShader();
 
-    VsOutput vertexShader(
-        const std::map<uint32_t, BindingDescription>& bindingMap,
-        const std::map<uint32_t, BufferObject*>& bufferMap,
-        const uint32_t& index
-    ) override;
+	VsOutput vertexShader(
+		const std::map<uint32_t, BindingDescription>& bindingMap,
+		const std::map<uint32_t, BufferObject*>& bufferMap,
+		const uint32_t& index
+	) override;
 
-    void fragmentShader(const VsOutput& input, FsOutput& output, const std::map<uint32_t, Texture*>& textures) override;
+	void fragmentShader(const VsOutput& input, FsOutput& output, const std::map<uint32_t, Texture*>& textures) override;
 
 public:
-    // ¹«ÓÃÊı¾İ¶Î
-    math::Mat4f mModelMatrix;
-    math::Mat4f mViewMatrix;
-    math::Mat4f mProjectionMatrix;
+	// å…¬ç”¨æ•°æ®æ®µ
+	math::Mat4f mModelMatrix;
+	math::Mat4f mViewMatrix;
+	math::Mat4f mProjectionMatrix;
 };

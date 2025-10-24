@@ -13,7 +13,7 @@ public:
         }
     };
 
-    //默认都是rgba格式
+    //榛樿閮芥槸rgba鏍煎紡
     void setBufferData(const uint32_t& width, const uint32_t& height, void* data);
 
     math::vec4f getColor(float u, float v);

@@ -1,5 +1,6 @@
 #pragma once
 #include <cassert>
+#include <cstdint>
 #include <iostream>
 
 namespace math {
@@ -7,7 +8,7 @@ namespace math {
     class Matrix44;
 
     /*
-    * апсеох
+    * О©╫О©╫О©╫О©╫О©╫О©╫
      * m0 m3 m6
      * m1 m4 m7
      * m2 m5 m8
@@ -102,7 +103,7 @@ namespace math {
 
 
     /*
-    * апсеох
+    * О©╫О©╫О©╫О©╫О©╫О©╫
      * m0 m4 m8  m12
      * m1 m5 m9  m13
      * m2 m6 m10 m14
