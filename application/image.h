@@ -8,6 +8,12 @@ public:
 
     static Image* createImage(const std::string& path);
     static void destroyImage(Image* image);
+    static Image* createImageFromMemory(
+    const std::string& path,
+    unsigned char* dataIn,
+    uint32_t widthIn,
+    uint32_t heightIn
+);
 
 public:
     uint32_t mWidth{ 0 };
