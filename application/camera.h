@@ -8,51 +8,55 @@
 #define MOVE_FRONT 0x004
 #define MOVE_BACK 0x008
 
-//1 ½ÓÊÕµ½Íâ²¿²Ù×÷£¨Êó±ê/¼üÅÌ£©
-//2 ¸ù¾İ²Ù×÷¸ü¸Äµ±Ç°×´Ì¬£¨ÒÆ¶¯×´Ì¬/frontÏòÁ¿£©
-//3 Ã¿Ò»Ö¡ÓÉÓÃ»§Ö÷¶¯µ÷ÓÃupdate£¬¸üĞÂviewMatrix¾ØÕó
+//1 æ¥æ”¶åˆ°å¤–éƒ¨æ“ä½œï¼ˆé¼ æ ‡/é”®ç›˜ï¼‰
+//2 æ ¹æ®æ“ä½œæ›´æ”¹å½“å‰çŠ¶æ€ï¼ˆç§»åŠ¨çŠ¶æ€/frontå‘é‡ï¼‰
+//3 æ¯ä¸€å¸§ç”±ç”¨æˆ·ä¸»åŠ¨è°ƒç”¨updateï¼Œæ›´æ–°viewMatrixçŸ©é˜µ
 
 class Camera {
 public:
-    Camera(float fovy, float aspect, float n, float f, const math::vec3f& top, const math::vec3f& pos);
-    ~Camera() {}
+	Camera(float fovy, float aspect, float n, float f, const math::vec3f& top, const math::vec3f& pos);
+	~Camera() {}
 
 public:
-    void onRMouseDown(const int& x, const int& y);
+	void setCamSpeed(float s) {
+		mSpeed = s;
+	}
 
-    void onRMouseUp(const int& x, const int& y);
+	void onRMouseDown(const int& x, const int& y);
 
-    void onMouseMove(const int& x, const int& y);
+	void onRMouseUp(const int& x, const int& y);
 
-    void onKeyDown(const uint32_t& key);
+	void onMouseMove(const int& x, const int& y);
 
-    void onKeyUp(const uint32_t& key);
+	void onKeyDown(const uint32_t& key);
 
-    void update();
+	void onKeyUp(const uint32_t& key);
 
-    math::Mat4f getViewMatrix()const { return mViewMatrix; }
+	void update();
 
-    math::Mat4f getProjectionMatrix()const { return mProjectionMatrix; }
+	math::Mat4f getViewMatrix()const { return mViewMatrix; }
+
+	math::Mat4f getProjectionMatrix()const { return mProjectionMatrix; }
 
 private:
-    void pitch(int yoffset);
-    void yaw(int xoffset);
+	void pitch(int yoffset);
+	void yaw(int xoffset);
 
 private:
-    math::Mat4f mViewMatrix;
-    math::Mat4f mProjectionMatrix;
+	math::Mat4f mViewMatrix;
+	math::Mat4f mProjectionMatrix;
 
-    math::vec3f mPosition{ 0.0f, 0.0f, 0.0f };
-    math::vec3f mFront{ 0.0f, 0.0f, -1.0f };
-    math::vec3f mTop{ 0.0f, 1.0f, 0.0f };
-    float       mSpeed = { 0.01f };
+	math::vec3f mPosition{ 0.0f, 0.0f, 0.0f };
+	math::vec3f mFront{ 0.0f, 0.0f, -1.0f };
+	math::vec3f mTop{ 0.0f, 1.0f, 0.0f };
+	float       mSpeed = { 0.01f };
 
-    float       mPitch{ 0.0f };
-    float       mYaw{ -90.0f };
-    float       mSensitivity{ 0.1f };
+	float       mPitch{ 0.0f };
+	float       mYaw{ -90.0f };
+	float       mSensitivity{ 0.1f };
 
-    uint32_t    mMoveState{ NO_MOVE };
-    bool        mMouseMoving{ false };
-    int         mCurrentMouseX{ 0 };
-    int         mCurrentMouseY{ 0 };
+	uint32_t    mMoveState{ NO_MOVE };
+	bool        mMouseMoving{ false };
+	int         mCurrentMouseX{ 0 };
+	int         mCurrentMouseY{ 0 };
 };

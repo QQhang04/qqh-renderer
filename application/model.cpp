@@ -5,6 +5,18 @@
 #include "model.h"
 #include "../gpu/gpu.h"
 
+Model::Model() = default;   // 如果暂时不需要初始化，直接默认
+// 或者显式： mRootMesh(nullptr) {}
+
+Model::~Model() {
+    // 释放 mesh 树
+    for (auto m : mMeshes) delete m;
+    for (auto & iter : mTextureCache)
+    {
+        sgl->deleteTexture(iter.second);
+    }
+}
+
 Mesh::Mesh(
     const std::vector<Vertex>& vertices,
     const std::vector<unsigned int> indices,

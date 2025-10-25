@@ -4,7 +4,7 @@
 #include <Windows.h>
 #include <windowsx.h>
 
-#define app Application::getInstance()
+#define APP Application::getInstance()
 
 class Application {
 public:
@@ -12,14 +12,14 @@ public:
     Application();
     ~Application();
 
-    // ×¢²á´°ÌåÀà ´´½¨´°Ìå ÏÔÊ¾´°Ìå
+    // ×¢ï¿½á´°ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
     bool initApplication(HINSTANCE hInstance, const uint32_t& width = 800, const uint32_t& height = 600);
-    // ÍÐ¹ÜwndProc²¶»ñµÄÐÅÏ¢£¬²¢ÇÒ½øÐÐ´¦Àí
+    // ï¿½Ð¹ï¿½wndProcï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½Ò½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½
     void handleMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-    // Ã¿Ò»Ö¡µÄÑ­»·¶¼»áµ÷ÓÃ£¬ÓÃÀ´·Ö·¢ÏûÏ¢
+    // Ã¿Ò»Ö¡ï¿½ï¿½Ñ­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½Ï¢
     bool peekMessage();
 
-    // ÓÃÓÚ»æÍ¼
+    // ï¿½ï¿½ï¿½Ú»ï¿½Í¼
     void show();
 
     uint32_t getWidth() const { return mWidth; }
@@ -48,8 +48,8 @@ private:
     int mWidth = 800;
     int mHeight = 600;
 
-    HDC mhDC; // µ±Ç°´°¿ÚÖ÷dc
-    HDC mCanvasDC; // ´´½¨µÄÓÚmhDCÏà¼æÈÝµÄ»æÍ¼ÓÃµÄdc
-    HBITMAP mhBmp; // mCanvasDCÄÚ²¿Éú³ÉµÄbitmap
-    void* mCanvasBuffer{ nullptr }; // mhBmp¶ÔÓ¦µÄÄÚ´æÆðÊ¼Î»ÖÃÖ¸Õë
+    HDC mhDC; // ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½dc
+    HDC mCanvasDC; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½mhDCï¿½ï¿½ï¿½ï¿½ÝµÄ»ï¿½Í¼ï¿½Ãµï¿½dc
+    HBITMAP mhBmp; // mCanvasDCï¿½Ú²ï¿½ï¿½ï¿½ï¿½Éµï¿½bitmap
+    void* mCanvasBuffer{ nullptr }; // mhBmpï¿½ï¿½Ó¦ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½Ê¼Î»ï¿½ï¿½Ö¸ï¿½ï¿½
 };

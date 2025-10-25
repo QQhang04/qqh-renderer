@@ -1,4 +1,4 @@
-#include <Windows.h>
+ï»¿#include <Windows.h>
 #include <iostream>
 #include "application/application.h"
 #include "application/model.h"
@@ -11,89 +11,91 @@ uint32_t HEIGHT = 600;
 
 float angle = 0;
 
-// ¹âÕÕÐÅÏ¢
+// å…‰ç…§ä¿¡æ¯
 DirectionalLight directionalLight;
 math::vec3f envLight;
 
-// Ïà»ú
+// ç›¸æœº
 Camera* camera = nullptr;
 math::vec3f camPos;
 
-// Ê¹ÓÃµÄShader
+// ä½¿ç”¨çš„Shader
 LightShader* shader = nullptr;
 
-// Ê¹ÓÃµÄÄ£ÐÍ
+// ä½¿ç”¨çš„æ¨¡åž‹
 Model* model = nullptr;
 
-//mvp±ä»»¾ØÕó
+//mvpå˜æ¢çŸ©é˜µ
 math::Mat4f modelMatrix;
 math::Mat4f viewMatrix;
 math::Mat4f perspectiveMatrix;
 
 void transform() {
-    angle -= 0.02f;
-    auto rotateMatrix = math::rotate(math::Mat4f(), angle, {0.0f, 1.0f, 0.0f});
-    auto translateMatrix = math::translate(math::Mat4f(), 0.0f, 0.0f, -5.0f);
-    auto m = translateMatrix * rotateMatrix;
-    m = math::scale(m, 0.1f, 0.1f, 0.1f);
-    model->setModelMatrix(m);
+	// angle -= 0.02f;
+	auto rotateMatrix = math::rotate(math::Mat4f(), angle, { 0.0f, 1.0f, 0.0f });
+	auto translateMatrix = math::translate(math::Mat4f(), 0.0f, 0.0f, -1.0f);
+	auto m = translateMatrix * rotateMatrix;
+	m = math::scale(m, 0.1f, 0.1f, 0.1f);
+	model->setModelMatrix(m);
 }
 
 void prepare() {
-    camera = new Camera(60.0f, (float)WIDTH / (float)HEIGHT, 0.1f, 1000.0f, { 0.0f, 1.0f, 0.0f }, camPos);
-    app->setCamera(camera);
+	camPos = math::vec3f(0, 0, 0);
+	camera = new Camera(60.0f, (float)WIDTH / (float)HEIGHT, 0.1f, 1000.0f, { 0.0f, 1.0f, 0.0f }, camPos);
+	APP->setCamera(camera);
+	camera->setCamSpeed(.5f);
 
-    shader = new LightShader();
-    directionalLight.color = {0.8f, 0.8f, 1.0f};
-    directionalLight.direction = {-1.0f, -0.5f, -0.7f};
-    envLight = { 0.2f, 0.2f, 0.2f };
+	shader = new LightShader();
+	directionalLight.color = { 0.8f, 0.8f, 1.0f };
+	directionalLight.direction = { -1.0f, -0.5f, -0.7f };
+	envLight = { 0.2f, 0.2f, 0.2f };
 
-    sgl->setEnable(CULL_FACE, true);
+	sgl->setEnable(CULL_FACE, false);
 
-    model = new Model();
-    model->read("assets/model/dinosaur/source/Rampaging T-Rex.glb");
-    //model->read("assets/model/Fist Fight B.fbx");
-    //model->read("assets/model/bag/backpack.obj");
+	model = new Model();
+	//model->read("assets/model/cottage_fbx.fbx");
+	model->read("assets/model/Audi R8.fbx");
+	//model->read("assets/model/bag/backpack.obj");
 }
 
 void render() {
-    transform();
-    shader->mViewMatrix = camera->getViewMatrix();
-    shader->mProjectionMatrix = camera->getProjectionMatrix();
+	transform();
+	shader->mViewMatrix = camera->getViewMatrix();
+	shader->mProjectionMatrix = camera->getProjectionMatrix();
 
-    shader->mDirectionalLight = directionalLight;
-    shader->mEnvLight = envLight;
+	shader->mDirectionalLight = directionalLight;
+	shader->mEnvLight = envLight;
 
-    sgl->clear();
-    sgl->useProgram(shader);
+	sgl->clear();
+	sgl->useProgram(shader);
 
-    model->draw((shader));
+	model->draw((shader));
 }
 
 int APIENTRY wWinMain(
-    _In_        HINSTANCE hInstance,        // ±¾Ó¦ÓÃ³ÌÐòÊµÀý¾ä±ú£¬Î¨Ò»Ö¸´úµ±Ç°³ÌÐò
-    _In_opt_    HINSTANCE hPrevInstance,    // ±¾³ÌÐòÇ°Ò»¸öÊµÀý£¬Ò»°ãÊÇnull
-    _In_        LPWSTR    lpCmdLine,        // Ó¦ÓÃ³ÌÐòÔËÐÐ²ÎÊý
-    _In_        int       nCmdShow          // ´°¿ÚÈçºÎÏÔÊ¾£¨×î´ó»¯¡¢×îÐ¡»¯¡¢Òþ²Ø£©£¬²»ÐèÀí»á
+	_In_        HINSTANCE hInstance,        // æœ¬åº”ç”¨ç¨‹åºå®žä¾‹å¥æŸ„ï¼Œå”¯ä¸€æŒ‡ä»£å½“å‰ç¨‹åº
+	_In_opt_    HINSTANCE hPrevInstance,    // æœ¬ç¨‹åºå‰ä¸€ä¸ªå®žä¾‹ï¼Œä¸€èˆ¬æ˜¯null
+	_In_        LPWSTR    lpCmdLine,        // åº”ç”¨ç¨‹åºè¿è¡Œå‚æ•°
+	_In_        int       nCmdShow          // çª—å£å¦‚ä½•æ˜¾ç¤ºï¼ˆæœ€å¤§åŒ–ã€æœ€å°åŒ–ã€éšè—ï¼‰ï¼Œä¸éœ€ç†ä¼š
 )
 {
-    if (!app->initApplication(hInstance, 800, 600)) {
-        return -1;
-    }
+	if (!APP->initApplication(hInstance, 800, 600)) {
+		return -1;
+	}
 
-    sgl->initSurface(app->getWidth(), app->getHeight(), app->getCanvas());
+	sgl->initSurface(APP->getWidth(), APP->getHeight(), APP->getCanvas());
 
-    bool alive = true;
-    prepare();
+	bool alive = true;
+	prepare();
 
-  
-    while (alive) {
-        alive = app->peekMessage();
-        camera->update();
-        render();
-        app->show();
-    }
 
-    delete camera;
-    return 0;
+	while (alive) {
+		alive = APP->peekMessage();
+		camera->update();
+		render();
+		APP->show();
+	}
+
+	delete camera;
+	return 0;
 }

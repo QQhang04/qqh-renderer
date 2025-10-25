@@ -33,11 +33,19 @@ void LightShader::fragmentShader(const VsOutput& input, FsOutput& output, const 
 	auto lightDirection = math::normalize(mDirectionalLight.direction);
 
 	//取出texture
-	auto iter = textures.find(mDiffuseTexture);
-	auto texture = iter->second;
+	Texture* currentTex;
+	if (textures.size() != 0)
+	{
+		auto iter = textures.find(mDiffuseTexture);
+		currentTex = iter->second;
+	}
+	else
+	{
+		currentTex = nullptr;
+	}
 
 	//计算颜色
-	math::vec4f texColor = texture->getColor(input.mUV.x, input.mUV.y);
+	math::vec4f texColor = currentTex != nullptr ? currentTex->getColor(input.mUV.x, input.mUV.y) : math::vec4f(1, 1, 1, 1);
 
 	//计算漫反射光
 	math::vec4f diffuseColor;
